@@ -1,5 +1,5 @@
 import database as db
-import transferObject.Zakazka as zakazka
+import transferObject.Zakazka as Z
 import transferObject.Polozka as polozka
 import transferObject.Vozidlo as vozidlo
 from tkinter import *
@@ -15,7 +15,7 @@ def refresh():
 
 def mainScreen():
     Label(canvas, text="Zakázky").grid()
-    rows = db.get("10")
+    zakazky = db.get("10")
 
     canvasZ = Canvas(canvas)
     canvasZ.grid()
@@ -24,53 +24,71 @@ def mainScreen():
     Label(canvasZ, text="SPZ").grid(row=0, column=2)
     Label(canvasZ, text="VIN").grid(row=0, column=3)
 
-    for row in rows:
-        cisloZakazky = row[0]
-        v = db.getVozidloByCisloZakazky(cisloZakazky)
+    for zakazka in zakazky:
+        cisloZakazky = zakazka.number
         cisloRadku = int(cisloZakazky)+1
+
+        v = zakazka.vozidlo
         # zakazka
         Label(canvasZ, text=cisloZakazky).grid(row=cisloRadku, column=0)
-        Label(canvasZ, text=row[1]).grid(row=cisloRadku, column=1)
+        Label(canvasZ, text=zakazka.datum).grid(row=cisloRadku, column=1)
 
         # vozidlo
-        Label(canvasZ, text=v[0][1]).grid(row=cisloRadku, column=2)
-        Label(canvasZ, text=v[0][2]).grid(row=cisloRadku, column=3)
+        Label(canvasZ, text=v.SPZ).grid(row=cisloRadku, column=2)
+        Label(canvasZ, text=v.VIN).grid(row=cisloRadku, column=3)
 
-    Button(canvas, command=novaZakazkaScreen, text="Nova Zakazka").grid(row=50, column=0)
+        Button(canvasZ, command=lambda: novaZakazkaScreen(zakazka), text="Upravit").grid(row=cisloRadku, column=4)
+
+    Button(canvas, command=novaZakazkaScreenInit, text="Nova Zakázka").grid(row=50, column=0)
 
 
 def getNextNumber():
     return str(int(db.count()[0][0]) + 1)
 
 
-def novaZakazkaScreen():
+def novaZakazkaScreenInit():
+    cisloZakazky = getNextNumber()
+
+    z = Z.Zakazka()
+    z.number = cisloZakazky
+    z.datum = str(date.today())
+
+    v = vozidlo.Vozidlo()
+    v.cisloZakazky = cisloZakazky
+
+    z.polozky = []
+    z.vozidlo = v
+
+    novaZakazkaScreen(z)
+
+
+def novaZakazkaScreen(z):
     def pridatPolozku():
+        p = polozka.Polozka()
+        p.cisloZakazky = z.number
+        p.cislo = StringVar()
+        p.oznaceni = StringVar()
+        p.mnozstvi = StringVar()
+        p.cenaZaJednotku = StringVar()
+        p.cenaCelkem = StringVar()
+
+        polozky.append(p)
+
         canvasP = Canvas(zakazkaP)
         canvasP.grid(columnspan=5)
 
-        cisloPolozky = StringVar()
-        Entry(canvasP, textvariable=cisloPolozky).grid(row=2, column=0)
-        Entry(canvasP, textvariable=cisloPolozky).grid(row=2, column=1)
-        Entry(canvasP, textvariable=cisloPolozky).grid(row=2, column=2)
-        Entry(canvasP, textvariable=cisloPolozky).grid(row=2, column=3)
-        Entry(canvasP, textvariable=cisloPolozky).grid(row=2, column=4)
+        Entry(canvasP, textvariable=p.cislo).grid(row=2, column=0)
+        Entry(canvasP, textvariable=p.oznaceni).grid(row=2, column=1)
+        Entry(canvasP, textvariable=p.mnozstvi).grid(row=2, column=2)
+        Entry(canvasP, textvariable=p.cenaZaJednotku).grid(row=2, column=3)
+        Entry(canvasP, textvariable=p.cenaCelkem).grid(row=2, column=4)
 
     def saveNovaZakazka():
-        z = zakazka.Zakazka()
-        z.number = cisloZakazky
-        z.datum = datum
         db.save(z)
-
-        v = vozidlo.Vozidlo()
-        v.cisloZakazky = cisloZakazky
-        v.SPZ = SPZ.get()
-        v.VIN = VIN.get()
-        v.znacka = znacka.get()
-        v.typ = typ.get()
-        v.motor = motor.get()
-        v.rokVyroby = rokVyroby.get()
-        v.tachometr = tacho.get()
         db.saveVozidlo(v)
+
+        for item in polozky:
+            db.savePolozku(item)
 
         novaZakazkaWindow.destroy()
         refresh()
@@ -79,6 +97,9 @@ def novaZakazkaScreen():
         # todo dialogove okno (ano/ne - data budou deleted)
         novaZakazkaWindow.destroy()
 
+    print(z)
+    v = z.vozidlo
+    polozky = z.polozky
     novaZakazkaWindow = Toplevel(root)
     novaZakazkaWindow.title("Nová Zakázka")
 
@@ -88,44 +109,35 @@ def novaZakazkaScreen():
     Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
 
     Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
-    cisloZakazky = getNextNumber()
-    Label(zakazkaC, text=cisloZakazky).grid(row=1, column=1)
+    Label(zakazkaC, text=z.number).grid(row=1, column=1)
     Label(zakazkaC, text="Datum").grid(row=1, column=2)
-    datum = str(date.today())
-    Label(zakazkaC, text=datum).grid(row=1, column=3)
+    Label(zakazkaC, text=z.datum).grid(row=1, column=3)
 
     zakazkaV = Canvas(novaZakazkaWindow)
     zakazkaV.grid()
-    SPZ = StringVar()
-    VIN = StringVar()
-    znacka = StringVar()
-    typ = StringVar()
-    motor = StringVar()
-    rokVyroby = StringVar()
-    tacho = StringVar()
 
     Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
     Label(zakazkaV, text="SPZ").grid(row=4, column=0)
-    Entry(zakazkaV, textvariable=SPZ).grid(row=5, column=0)
+    Entry(zakazkaV, textvariable=v.SPZ).grid(row=5, column=0)
 
     Label(zakazkaV, text="VIN").grid(row=4, column=1)
-    Entry(zakazkaV, textvariable=VIN).grid(row=5, column=1)
+    Entry(zakazkaV, textvariable=v.VIN).grid(row=5, column=1)
 
     Label(zakazkaV, text="značka").grid(row=4, column=2)
-    Entry(zakazkaV, textvariable=znacka).grid(row=5, column=2)
+    Entry(zakazkaV, textvariable=v.znacka).grid(row=5, column=2)
 
     Label(zakazkaV, text="typ").grid(row=4, column=3)
-    Entry(zakazkaV, textvariable=typ).grid(row=5, column=3)
+    Entry(zakazkaV, textvariable=v.typ).grid(row=5, column=3)
 
     Label(zakazkaV, text="motor").grid(row=4, column=4)
-    Entry(zakazkaV, textvariable=motor).grid(row=5, column=4)
+    Entry(zakazkaV, textvariable=v.motor).grid(row=5, column=4)
 
     Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
-    Entry(zakazkaV, textvariable=rokVyroby).grid(row=5, column=5)
+    Entry(zakazkaV, textvariable=v.rokVyroby).grid(row=5, column=5)
 
     Label(zakazkaV, text="tachometr").grid(row=4, column=6)
-    Entry(zakazkaV, textvariable=tacho).grid(row=5, column=6)
+    Entry(zakazkaV, textvariable=v.tachometr).grid(row=5, column=6)
 
     zakazkaP = Canvas(novaZakazkaWindow)
     zakazkaP.grid()

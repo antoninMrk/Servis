@@ -8,6 +8,7 @@ cislo text,
 datum text    
 )""")
 c.execute("""CREATE TABLE polozka (
+cisloZakazky text,
 cislo text,
 oznaceni text,
 mnozstvi text,     

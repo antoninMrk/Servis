@@ -1,11 +1,14 @@
+from tkinter import StringVar
+
+
 class Vozidlo:
 
     def __init__(self):
         self.cisloZakazky = None
-        self.SPZ = None
-        self.VIN = None
-        self.znacka = None
-        self.typ = None
-        self.motor = None
-        self.rokVyroby = None
-        self.tachometr = None
+        self.SPZ = StringVar()
+        self.VIN = StringVar()
+        self.znacka = StringVar()
+        self.typ = StringVar()
+        self.motor = StringVar()
+        self.rokVyroby = StringVar()
+        self.tachometr = StringVar()
