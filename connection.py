@@ -13,3 +13,6 @@ class Connection:
     def close(self):
         self.connection.commit()
         self.connection.close()
+
+    def commit(self):
+        self.connection.commit()
