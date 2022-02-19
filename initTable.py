@@ -15,6 +15,7 @@ cenaZaJednotku text,
 cenaCelkem text    
 )""")
 c.execute("""CREATE TABLE vozidlo (
+cisloZakazky text,
 SPZ text,    
 VIN text,    
 znacka text,    

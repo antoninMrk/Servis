@@ -19,12 +19,22 @@ def mainScreen():
 
     canvasZ = Canvas(canvas)
     canvasZ.grid()
+    Label(canvasZ, text="Číslo zakázky").grid(row=0, column=0)
+    Label(canvasZ, text="Datum").grid(row=0, column=1)
+    Label(canvasZ, text="SPZ").grid(row=0, column=2)
+    Label(canvasZ, text="VIN").grid(row=0, column=3)
+
     for row in rows:
-        rowNumber = row[0]
-        Label(canvasZ, text="Číslo zakázky").grid(row=rowNumber, column=0)
-        Label(canvasZ, text=rowNumber).grid(row=rowNumber, column=1)
-        Label(canvasZ, text="Datum").grid(row=rowNumber, column=2)
-        Label(canvasZ, text=row[1]).grid(row=rowNumber, column=3)
+        cisloZakazky = row[0]
+        v = db.getVozidloByCisloZakazky(cisloZakazky)
+        cisloRadku = int(cisloZakazky)+1
+        # zakazka
+        Label(canvasZ, text=cisloZakazky).grid(row=cisloRadku, column=0)
+        Label(canvasZ, text=row[1]).grid(row=cisloRadku, column=1)
+
+        # vozidlo
+        Label(canvasZ, text=v[0][1]).grid(row=cisloRadku, column=2)
+        Label(canvasZ, text=v[0][2]).grid(row=cisloRadku, column=3)
 
     Button(canvas, command=novaZakazkaScreen, text="Nova Zakazka").grid(row=50, column=0)
 
@@ -51,6 +61,17 @@ def novaZakazkaScreen():
         z.datum = datum
         db.save(z)
 
+        v = vozidlo.Vozidlo()
+        v.cisloZakazky = cisloZakazky
+        v.SPZ = SPZ.get()
+        v.VIN = VIN.get()
+        v.znacka = znacka.get()
+        v.typ = typ.get()
+        v.motor = motor.get()
+        v.rokVyroby = rokVyroby.get()
+        v.tachometr = tacho.get()
+        db.saveVozidlo(v)
+
         novaZakazkaWindow.destroy()
         refresh()
 
@@ -75,35 +96,35 @@ def novaZakazkaScreen():
 
     zakazkaV = Canvas(novaZakazkaWindow)
     zakazkaV.grid()
+    SPZ = StringVar()
+    VIN = StringVar()
+    znacka = StringVar()
+    typ = StringVar()
+    motor = StringVar()
+    rokVyroby = StringVar()
+    tacho = StringVar()
 
     Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
     Label(zakazkaV, text="SPZ").grid(row=4, column=0)
-    SPZ = StringVar()
     Entry(zakazkaV, textvariable=SPZ).grid(row=5, column=0)
 
     Label(zakazkaV, text="VIN").grid(row=4, column=1)
-    VIN = StringVar()
     Entry(zakazkaV, textvariable=VIN).grid(row=5, column=1)
 
     Label(zakazkaV, text="značka").grid(row=4, column=2)
-    znacka = StringVar()
     Entry(zakazkaV, textvariable=znacka).grid(row=5, column=2)
 
     Label(zakazkaV, text="typ").grid(row=4, column=3)
-    typ = StringVar()
     Entry(zakazkaV, textvariable=typ).grid(row=5, column=3)
 
     Label(zakazkaV, text="motor").grid(row=4, column=4)
-    motor = StringVar()
     Entry(zakazkaV, textvariable=motor).grid(row=5, column=4)
 
     Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
-    rokVyroby = StringVar()
     Entry(zakazkaV, textvariable=rokVyroby).grid(row=5, column=5)
 
     Label(zakazkaV, text="tachometr").grid(row=4, column=6)
-    tacho = StringVar()
     Entry(zakazkaV, textvariable=tacho).grid(row=5, column=6)
 
     zakazkaP = Canvas(novaZakazkaWindow)
