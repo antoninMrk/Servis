@@ -1,3 +1,4 @@
+import time
 import tkinter.messagebox
 
 import database as db
@@ -22,24 +23,31 @@ def mainScreen():
     canvasZ = Canvas(canvas)
     canvasZ.grid()
     Label(canvasZ, text="Číslo zakázky").grid(row=0, column=0)
-    Label(canvasZ, text="Datum").grid(row=0, column=1)
+    Label(canvasZ, text="Klient").grid(row=0, column=1)
     Label(canvasZ, text="SPZ").grid(row=0, column=2)
     Label(canvasZ, text="VIN").grid(row=0, column=3)
+    Label(canvasZ, text="Značka").grid(row=0, column=4)
+    Label(canvasZ, text="Typ").grid(row=0, column=5)
+    Label(canvasZ, text="Datum").grid(row=0, column=6)
 
     for zakazka in zakazky:
         cisloZakazky = zakazka.ID
         cisloRadku = int(cisloZakazky)+1
 
         v = zakazka.vozidlo
-        # zakazka
+
         Label(canvasZ, text=cisloZakazky).grid(row=cisloRadku, column=0)
-        Label(canvasZ, text=zakazka.datum).grid(row=cisloRadku, column=1)
+        Label(canvasZ, text=zakazka.jmeno.get()).grid(row=cisloRadku, column=1)
 
         # vozidlo
         Label(canvasZ, text=v.SPZ.get()).grid(row=cisloRadku, column=2)
         Label(canvasZ, text=v.VIN.get()).grid(row=cisloRadku, column=3)
+        Label(canvasZ, text=v.znacka.get()).grid(row=cisloRadku, column=4)
+        Label(canvasZ, text=v.typ.get()).grid(row=cisloRadku, column=5)
 
-        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=4)
+        Label(canvasZ, text=zakazka.datum).grid(row=cisloRadku, column=6)
+
+        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=7)
 
     Button(canvas, command=novaZakazkaScreenInit, text="Nova Zakázka").grid(row=50, column=0)
 
@@ -74,6 +82,10 @@ def novaZakazkaScreen(z):
         showPolozku(p)
 
     def showPolozku(p):
+        def calculate(var, index, mode):
+            if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
+                p.cenaCelkem.set(int(p.mnozstvi.get())*int(p.cenaZaJednotku.get()))
+
         canvasP = Canvas(zakazkaP)
         canvasP.grid(columnspan=5)
 
@@ -82,6 +94,8 @@ def novaZakazkaScreen(z):
         Entry(canvasP, textvariable=p.mnozstvi).grid(row=2, column=2)
         Entry(canvasP, textvariable=p.cenaZaJednotku).grid(row=2, column=3)
         Entry(canvasP, textvariable=p.cenaCelkem).grid(row=2, column=4)
+        p.mnozstvi.trace("w", calculate)
+        p.cenaZaJednotku.trace("w", calculate)
 
     def saveNovaZakazka():
         db.save(z)
@@ -112,6 +126,8 @@ def novaZakazkaScreen(z):
     Label(zakazkaC, text=z.ID).grid(row=1, column=1)
     Label(zakazkaC, text="Datum").grid(row=1, column=2)
     Label(zakazkaC, text=z.datum).grid(row=1, column=3)
+    Label(zakazkaC, text="Jméno").grid(row=1, column=4)
+    Entry(zakazkaC, textvariable=z.jmeno).grid(row=1, column=5)
 
     zakazkaV = Canvas(novaZakazkaWindow)
     zakazkaV.grid()

@@ -5,7 +5,8 @@ conn = sqlite3.connect("servis.db")
 c = conn.cursor()
 c.execute("""CREATE TABLE zakazka (
 ID text,
-datum text    
+datum text, 
+jmeno text 
 )""")
 c.execute("""CREATE UNIQUE INDEX zakazka_idx ON zakazka(ID) 
 """)
