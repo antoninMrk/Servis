@@ -44,8 +44,9 @@ def mainScreen():
         Label(canvasZ, text=v.VIN.get()).grid(row=cisloRadku, column=3)
         Label(canvasZ, text=v.znacka.get()).grid(row=cisloRadku, column=4)
         Label(canvasZ, text=v.typ.get()).grid(row=cisloRadku, column=5)
-
-        Label(canvasZ, text=zakazka.datum).grid(row=cisloRadku, column=6)
+        datumSplit = zakazka.datum.split('-')
+        datum = datumSplit[2]+'/'+datumSplit[1]+'/'+datumSplit[0]
+        Label(canvasZ, text=datum).grid(row=cisloRadku, column=6)
 
         Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=7)
 
