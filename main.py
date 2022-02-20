@@ -126,7 +126,9 @@ def novaZakazkaScreen(z):
     Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
     Label(zakazkaC, text=z.ID).grid(row=1, column=1)
     Label(zakazkaC, text="Datum").grid(row=1, column=2)
-    Label(zakazkaC, text=z.datum).grid(row=1, column=3)
+    datumSplit = z.datum.split('-')
+    datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
+    Label(zakazkaC, text=datum).grid(row=1, column=3)
 
     zakazkaV = Canvas(novaZakazkaWindow)
     zakazkaV.grid()
@@ -173,7 +175,7 @@ def novaZakazkaScreen(z):
     zakazkaK = Canvas(novaZakazkaWindow)
     zakazkaK.grid()
     Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
-    Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=49)
+    Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
 
 
 root = Tk()
