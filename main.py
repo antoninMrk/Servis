@@ -90,11 +90,11 @@ def novaZakazkaScreen(z):
         canvasP = Canvas(zakazkaP)
         canvasP.grid(columnspan=5)
 
-        Entry(canvasP, textvariable=p.cislo, state='disabled').grid(row=2, column=0)
-        Entry(canvasP, textvariable=p.oznaceni).grid(row=2, column=1)
-        Entry(canvasP, textvariable=p.mnozstvi).grid(row=2, column=2)
-        Entry(canvasP, textvariable=p.cenaZaJednotku).grid(row=2, column=3)
-        Entry(canvasP, textvariable=p.cenaCelkem).grid(row=2, column=4)
+        Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center').grid(row=2, column=0)
+        Entry(canvasP, textvariable=p.oznaceni, justify='center').grid(row=2, column=1)
+        Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2)
+        Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3)
+        Entry(canvasP, textvariable=p.cenaCelkem, justify='center').grid(row=2, column=4)
         p.mnozstvi.trace("w", calculate)
         p.cenaZaJednotku.trace("w", calculate)
 
@@ -127,34 +127,35 @@ def novaZakazkaScreen(z):
     Label(zakazkaC, text=z.ID).grid(row=1, column=1)
     Label(zakazkaC, text="Datum").grid(row=1, column=2)
     Label(zakazkaC, text=z.datum).grid(row=1, column=3)
-    Label(zakazkaC, text="Jméno").grid(row=1, column=4)
-    Entry(zakazkaC, textvariable=z.jmeno).grid(row=1, column=5)
 
     zakazkaV = Canvas(novaZakazkaWindow)
     zakazkaV.grid()
 
+    Label(zakazkaV, text="Jméno").grid(row=0, column=0)
+    Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
+
     Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
     Label(zakazkaV, text="SPZ").grid(row=4, column=0)
-    Entry(zakazkaV, textvariable=v.SPZ).grid(row=5, column=0)
+    Entry(zakazkaV, textvariable=v.SPZ, justify='center').grid(row=5, column=0)
 
     Label(zakazkaV, text="VIN").grid(row=4, column=1)
-    Entry(zakazkaV, textvariable=v.VIN).grid(row=5, column=1)
+    Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)
 
     Label(zakazkaV, text="značka").grid(row=4, column=2)
-    Entry(zakazkaV, textvariable=v.znacka).grid(row=5, column=2)
+    Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
 
     Label(zakazkaV, text="typ").grid(row=4, column=3)
-    Entry(zakazkaV, textvariable=v.typ).grid(row=5, column=3)
+    Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=5, column=3)
 
     Label(zakazkaV, text="motor").grid(row=4, column=4)
-    Entry(zakazkaV, textvariable=v.motor).grid(row=5, column=4)
+    Entry(zakazkaV, textvariable=v.motor, justify='center').grid(row=5, column=4)
 
     Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
-    Entry(zakazkaV, textvariable=v.rokVyroby).grid(row=5, column=5)
+    Entry(zakazkaV, textvariable=v.rokVyroby, justify='center').grid(row=5, column=5)
 
     Label(zakazkaV, text="tachometr").grid(row=4, column=6)
-    Entry(zakazkaV, textvariable=v.tachometr).grid(row=5, column=6)
+    Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
 
     zakazkaP = Canvas(novaZakazkaWindow)
     zakazkaP.grid()
