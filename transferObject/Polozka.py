@@ -1,9 +1,13 @@
+from tkinter import StringVar
+
+
 class Polozka:
 
     def __init__(self):
+        self.ID = None
+        self.cislo = StringVar()
         self.cisloZakazky = None
-        self.cislo = None
-        self.oznaceni = None
-        self.mnozstvi = None
-        self.cenaZaJednotku = None
-        self.cenaCelkem = None
+        self.oznaceni = StringVar()
+        self.mnozstvi = StringVar()
+        self.cenaZaJednotku = StringVar()
+        self.cenaCelkem = StringVar()

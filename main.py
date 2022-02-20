@@ -1,3 +1,5 @@
+import tkinter.messagebox
+
 import database as db
 import transferObject.Zakazka as Z
 import transferObject.Polozka as polozka
@@ -25,7 +27,7 @@ def mainScreen():
     Label(canvasZ, text="VIN").grid(row=0, column=3)
 
     for zakazka in zakazky:
-        cisloZakazky = zakazka.number
+        cisloZakazky = zakazka.ID
         cisloRadku = int(cisloZakazky)+1
 
         v = zakazka.vozidlo
@@ -34,10 +36,10 @@ def mainScreen():
         Label(canvasZ, text=zakazka.datum).grid(row=cisloRadku, column=1)
 
         # vozidlo
-        Label(canvasZ, text=v.SPZ).grid(row=cisloRadku, column=2)
-        Label(canvasZ, text=v.VIN).grid(row=cisloRadku, column=3)
+        Label(canvasZ, text=v.SPZ.get()).grid(row=cisloRadku, column=2)
+        Label(canvasZ, text=v.VIN.get()).grid(row=cisloRadku, column=3)
 
-        Button(canvasZ, command=lambda: novaZakazkaScreen(zakazka), text="Upravit").grid(row=cisloRadku, column=4)
+        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=4)
 
     Button(canvas, command=novaZakazkaScreenInit, text="Nova Zakázka").grid(row=50, column=0)
 
@@ -50,7 +52,7 @@ def novaZakazkaScreenInit():
     cisloZakazky = getNextNumber()
 
     z = Z.Zakazka()
-    z.number = cisloZakazky
+    z.ID = cisloZakazky
     z.datum = str(date.today())
 
     v = vozidlo.Vozidlo()
@@ -65,19 +67,17 @@ def novaZakazkaScreenInit():
 def novaZakazkaScreen(z):
     def pridatPolozku():
         p = polozka.Polozka()
-        p.cisloZakazky = z.number
-        p.cislo = StringVar()
-        p.oznaceni = StringVar()
-        p.mnozstvi = StringVar()
-        p.cenaZaJednotku = StringVar()
-        p.cenaCelkem = StringVar()
+        p.cisloZakazky = z.ID
 
         polozky.append(p)
+        p.cislo.set(len(polozky))
+        showPolozku(p)
 
+    def showPolozku(p):
         canvasP = Canvas(zakazkaP)
         canvasP.grid(columnspan=5)
 
-        Entry(canvasP, textvariable=p.cislo).grid(row=2, column=0)
+        Entry(canvasP, textvariable=p.cislo, state='disabled').grid(row=2, column=0)
         Entry(canvasP, textvariable=p.oznaceni).grid(row=2, column=1)
         Entry(canvasP, textvariable=p.mnozstvi).grid(row=2, column=2)
         Entry(canvasP, textvariable=p.cenaZaJednotku).grid(row=2, column=3)
@@ -96,8 +96,8 @@ def novaZakazkaScreen(z):
     def zavrit():
         # todo dialogove okno (ano/ne - data budou deleted)
         novaZakazkaWindow.destroy()
+        refresh()
 
-    print(z)
     v = z.vozidlo
     polozky = z.polozky
     novaZakazkaWindow = Toplevel(root)
@@ -109,7 +109,7 @@ def novaZakazkaScreen(z):
     Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
 
     Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
-    Label(zakazkaC, text=z.number).grid(row=1, column=1)
+    Label(zakazkaC, text=z.ID).grid(row=1, column=1)
     Label(zakazkaC, text="Datum").grid(row=1, column=2)
     Label(zakazkaC, text=z.datum).grid(row=1, column=3)
 
@@ -149,7 +149,8 @@ def novaZakazkaScreen(z):
     Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
     Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
     Button(zakazkaP, command=pridatPolozku, text="Přidat Položku").grid(row=1, column=50)
-    pridatPolozku()
+    for pol in z.polozky:
+        showPolozku(pol)
 
     zakazkaK = Canvas(novaZakazkaWindow)
     zakazkaK.grid()

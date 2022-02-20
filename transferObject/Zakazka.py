@@ -1,7 +1,7 @@
 class Zakazka:
 
     def __init__(self):
-        self.number = None
+        self.ID = None
         self.datum = None
         self.polozky = []
         self.vozidlo = None

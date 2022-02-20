@@ -4,6 +4,7 @@ from tkinter import StringVar
 class Vozidlo:
 
     def __init__(self):
+        self.ID = None
         self.cisloZakazky = None
         self.SPZ = StringVar()
         self.VIN = StringVar()
