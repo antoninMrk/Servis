@@ -1,19 +1,28 @@
-import time
-import tkinter.messagebox
-
 import database as db
 import transferObject.Zakazka as Z
 import transferObject.Polozka as polozka
 import transferObject.Vozidlo as vozidlo
 from tkinter import *
 from datetime import date
-
+import os
+import xlsxwriter
 
 def refresh():
     canvas.destroy()
     canvas.__init__()
     canvas.grid()
     mainScreen()
+
+
+def tisk(zakazka):
+    fileName = "workbook"+zakazka.ID+".xlsx"
+    wb = xlsxwriter.Workbook(fileName)
+    ws = wb.add_worksheet("worksheet1")
+    ws.write("A1", zakazka.jmeno.get())
+    wb.close()
+    cwd = os.getcwd()
+    os.startfile(cwd+"/"+fileName, "print")
+    pass
 
 
 def mainScreen():
@@ -32,7 +41,7 @@ def mainScreen():
 
     for zakazka in zakazky:
         cisloZakazky = zakazka.ID
-        cisloRadku = int(cisloZakazky)+1
+        cisloRadku = int(cisloZakazky) + 1
 
         v = zakazka.vozidlo
 
@@ -45,10 +54,11 @@ def mainScreen():
         Label(canvasZ, text=v.znacka.get()).grid(row=cisloRadku, column=4)
         Label(canvasZ, text=v.typ.get()).grid(row=cisloRadku, column=5)
         datumSplit = zakazka.datum.split('-')
-        datum = datumSplit[2]+'/'+datumSplit[1]+'/'+datumSplit[0]
+        datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
         Label(canvasZ, text=datum).grid(row=cisloRadku, column=6)
 
         Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=7)
+        Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
     Button(canvas, command=novaZakazkaScreenInit, text="Nova Zakázka").grid(row=50, column=0)
 
@@ -85,7 +95,7 @@ def novaZakazkaScreen(z):
     def showPolozku(p):
         def calculate(var, index, mode):
             if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
-                p.cenaCelkem.set(int(p.mnozstvi.get())*int(p.cenaZaJednotku.get()))
+                p.cenaCelkem.set(int(p.mnozstvi.get()) * int(p.cenaZaJednotku.get()))
 
         canvasP = Canvas(zakazkaP)
         canvasP.grid(columnspan=5)
