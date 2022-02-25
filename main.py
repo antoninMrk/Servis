@@ -3,11 +3,19 @@ import transferObject.Zakazka as Z
 import transferObject.Polozka as polozka
 import transferObject.Vozidlo as vozidlo
 from tkinter import *
+from tkinter import messagebox
 from datetime import date
 import os
 import xlsxwriter
 
-def refresh():
+
+class Boolean(object):
+    def __init__(self, val):
+        self.val = val
+
+
+def refresh(opened):
+    opened.val = True
     canvas.destroy()
     canvas.__init__()
     canvas.grid()
@@ -15,17 +23,18 @@ def refresh():
 
 
 def tisk(zakazka):
-    fileName = "workbook"+zakazka.ID+".xlsx"
+    fileName = "workbook" + zakazka.ID + ".xlsx"
     wb = xlsxwriter.Workbook(fileName)
     ws = wb.add_worksheet("worksheet1")
     ws.write("A1", zakazka.jmeno.get())
     wb.close()
     cwd = os.getcwd()
-    os.startfile(cwd+"/"+fileName, "print")
-    pass
+    os.startfile(cwd + "/" + fileName, "print")
 
 
 def mainScreen():
+    opened = Boolean(True)
+
     Label(canvas, text="Zakázky").grid()
     zakazky = db.get("10")
 
@@ -57,17 +66,18 @@ def mainScreen():
         datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
         Label(canvasZ, text=datum).grid(row=cisloRadku, column=6)
 
-        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za), text="Upravit").grid(row=cisloRadku, column=7)
+        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za, opened), text="Upravit").grid(row=cisloRadku,
+                                                                                                       column=7)
         Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
-    Button(canvas, command=novaZakazkaScreenInit, text="Nova Zakázka").grid(row=50, column=0)
+    Button(canvas, command=lambda: novaZakazkaScreenInit(opened), text="Nova Zakázka").grid(row=50, column=0)
 
 
 def getNextNumber():
     return str(int(db.count()[0][0]) + 1)
 
 
-def novaZakazkaScreenInit():
+def novaZakazkaScreenInit(opened):
     cisloZakazky = getNextNumber()
 
     z = Z.Zakazka()
@@ -80,10 +90,10 @@ def novaZakazkaScreenInit():
     z.polozky = []
     z.vozidlo = v
 
-    novaZakazkaScreen(z)
+    novaZakazkaScreen(z, opened)
 
 
-def novaZakazkaScreen(z):
+def novaZakazkaScreen(z, opened):
     def pridatPolozku():
         p = polozka.Polozka()
         p.cisloZakazky = z.ID
@@ -116,76 +126,80 @@ def novaZakazkaScreen(z):
             db.savePolozku(item)
 
         novaZakazkaWindow.destroy()
-        refresh()
+        refresh(opened)
 
     def zavrit():
         # todo dialogove okno (ano/ne - data budou deleted)
-        novaZakazkaWindow.destroy()
-        refresh()
+        if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZakázka nebude uložena!", parent=novaZakazkaWindow):
+            novaZakazkaWindow.destroy()
+            refresh(opened)
 
-    v = z.vozidlo
-    polozky = z.polozky
-    novaZakazkaWindow = Toplevel(root)
-    novaZakazkaWindow.title("Nová Zakázka")
+    if opened.val:
+        opened.val = False
+        v = z.vozidlo
+        polozky = z.polozky
+        novaZakazkaWindow = Toplevel(root)
+        novaZakazkaWindow.title("Nová Zakázka")
+        novaZakazkaWindow.protocol("WM_DELETE_WINDOW", zavrit)
 
-    zakazkaC = Canvas(novaZakazkaWindow)
-    zakazkaC.grid()
+        zakazkaC = Canvas(novaZakazkaWindow)
+        zakazkaC.grid()
 
-    Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
+        Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
 
-    Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
-    Label(zakazkaC, text=z.ID).grid(row=1, column=1)
-    Label(zakazkaC, text="Datum").grid(row=1, column=2)
-    datumSplit = z.datum.split('-')
-    datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
-    Label(zakazkaC, text=datum).grid(row=1, column=3)
+        Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
+        Label(zakazkaC, text=z.ID).grid(row=1, column=1)
+        Label(zakazkaC, text="Datum").grid(row=1, column=2)
+        datumSplit = z.datum.split('-')
+        datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
+        Label(zakazkaC, text=datum).grid(row=1, column=3)
 
-    zakazkaV = Canvas(novaZakazkaWindow)
-    zakazkaV.grid()
+        zakazkaV = Canvas(novaZakazkaWindow)
+        zakazkaV.grid()
 
-    Label(zakazkaV, text="Jméno").grid(row=0, column=0)
-    Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
+        Label(zakazkaV, text="Jméno").grid(row=0, column=0)
+        Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
 
-    Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
+        Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
-    Label(zakazkaV, text="SPZ").grid(row=4, column=0)
-    Entry(zakazkaV, textvariable=v.SPZ, justify='center').grid(row=5, column=0)
+        Label(zakazkaV, text="SPZ").grid(row=4, column=0)
+        Entry(zakazkaV, textvariable=v.SPZ, justify='center').grid(row=5, column=0)
 
-    Label(zakazkaV, text="VIN").grid(row=4, column=1)
-    Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)
+        Label(zakazkaV, text="VIN").grid(row=4, column=1)
+        Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)
 
-    Label(zakazkaV, text="značka").grid(row=4, column=2)
-    Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
+        Label(zakazkaV, text="značka").grid(row=4, column=2)
+        Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
 
-    Label(zakazkaV, text="typ").grid(row=4, column=3)
-    Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=5, column=3)
+        Label(zakazkaV, text="typ").grid(row=4, column=3)
+        Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=5, column=3)
 
-    Label(zakazkaV, text="motor").grid(row=4, column=4)
-    Entry(zakazkaV, textvariable=v.motor, justify='center').grid(row=5, column=4)
+        Label(zakazkaV, text="motor").grid(row=4, column=4)
+        Entry(zakazkaV, textvariable=v.motor, justify='center').grid(row=5, column=4)
 
-    Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
-    Entry(zakazkaV, textvariable=v.rokVyroby, justify='center').grid(row=5, column=5)
+        Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
+        Entry(zakazkaV, textvariable=v.rokVyroby, justify='center').grid(row=5, column=5)
 
-    Label(zakazkaV, text="tachometr").grid(row=4, column=6)
-    Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
+        Label(zakazkaV, text="tachometr").grid(row=4, column=6)
+        Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
 
-    zakazkaP = Canvas(novaZakazkaWindow)
-    zakazkaP.grid()
+        zakazkaP = Canvas(novaZakazkaWindow)
+        zakazkaP.grid()
 
-    Label(zakazkaP, text="Polozky").grid(row=0, column=0)
-    Label(zakazkaP, text="č. položky").grid(row=1, column=0)
-    Label(zakazkaP, text="označení položky").grid(row=1, column=1)
-    Label(zakazkaP, text="množství").grid(row=1, column=2)
-    Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
-    Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
-    Button(zakazkaP, command=pridatPolozku, text="Přidat Položku").grid(row=1, column=50)
-    for pol in z.polozky:
-        showPolozku(pol)
+        Label(zakazkaP, text="Polozky").grid(row=0, column=0)
+        Label(zakazkaP, text="č. položky").grid(row=1, column=0)
+        Label(zakazkaP, text="označení položky").grid(row=1, column=1)
+        Label(zakazkaP, text="množství").grid(row=1, column=2)
+        Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
+        Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
+        Button(zakazkaP, command=pridatPolozku, text="Přidat Položku").grid(row=1, column=50)
+        for pol in z.polozky:
+            showPolozku(pol)
 
-    zakazkaK = Canvas(novaZakazkaWindow)
-    zakazkaK.grid()
-    Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
-    Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
+        zakazkaK = Canvas(novaZakazkaWindow)
+        zakazkaK.grid()
+        Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
+        Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
 
 
 root = Tk()
