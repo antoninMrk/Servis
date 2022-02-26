@@ -72,6 +72,10 @@ def tisk(zakazka):
         ws.write("F" + str(index), pol.cenaZaJednotku.get())
         ws.write("I" + str(index), pol.cenaCelkem.get())
 
+    index += 1
+    ws.write("G" + str(index), "Celkem za materiál: ")
+    ws.write("I" + str(index), zakazka.celkemZaMaterial.get())
+
     # práce
     index += 2
     ws.write("A" + str(index), "Práce")
@@ -88,6 +92,15 @@ def tisk(zakazka):
         ws.write("D" + str(index), p.mnozstvi.get())
         ws.write("F" + str(index), p.cenaZaJednotku.get())
         ws.write("I" + str(index), p.cenaCelkem.get())
+
+    index += 1
+    ws.write("G" + str(index), "Celkem za práci: ")
+    ws.write("I" + str(index), zakazka.celkemZaPraci.get())
+
+    index += 1
+    ws.write("G" + str(index), "Celkem: ")
+    ws.write("I" + str(index), zakazka.celkemZaZakazku.get())
+
 
     wb.close()
     # cwd = os.getcwd()
@@ -182,6 +195,7 @@ def novaZakazkaScreen(z, opened, edited):
                         cenaZaPraci += int(pra.cenaCelkem.get())
 
                 z.celkemZaPraci.set(str(cenaZaPraci))
+                z.celkemZaZakazku.set(str(int(cenaZaMaterial)+int(cenaZaPraci)))
 
         canvasP = Canvas(canvasGroup)
         canvasP.grid(columnspan=5)
@@ -290,8 +304,12 @@ def novaZakazkaScreen(z, opened, edited):
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Položku").grid(row=1, column=50)
 
+        hasPolozku = False
         for pol in z.polozky:
+            hasPolozku = True
             showPolozku(pol, zakazkaP)
+        if not hasPolozku:
+            pridatPolozku(zakazkaP, polozky)
 
         Label(canvasMaterial, text="Celkem za Material").grid(row=50, column=3)
         Entry(canvasMaterial, textvariable=z.celkemZaMaterial, justify='center').grid(row=50, column=4)
@@ -314,8 +332,13 @@ def novaZakazkaScreen(z, opened, edited):
         for prac in prace:
             showPolozku(prac, zakazkaPrace)
 
+        pridatPolozku(zakazkaPrace, prace)
+
         Label(canvasPrace, text="Celkem za práci").grid(row=50, column=3)
         Entry(canvasPrace, textvariable=z.celkemZaPraci, justify='center').grid(row=50, column=4)
+
+        Label(canvasPrace, text="Celkem").grid(row=51, column=3)
+        Entry(canvasPrace, textvariable=z.celkemZaZakazku, justify='center').grid(row=51, column=4)
 
         zakazkaK = Canvas(novaZakazkaWindow)
         zakazkaK.grid()

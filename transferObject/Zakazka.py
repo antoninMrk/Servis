@@ -13,6 +13,7 @@ class Zakazka:
         self.celkemZaPraci = StringVar()
         self.vozidlo = None
         self.telefon = StringVar()
+        self.celkemZaZakazku = StringVar()
 
 
     def addPolozka(self, polozka):

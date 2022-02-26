@@ -7,7 +7,10 @@ c.execute("""CREATE TABLE zakazka (
 ID text,
 datum text, 
 jmeno text,
-telefon text
+telefon text,
+celkemZaMaterial text,
+celkemZaPraci text,
+celkemZaZakazku text
 )""")
 c.execute("""CREATE UNIQUE INDEX zakazka_idx ON zakazka(ID) 
 """)

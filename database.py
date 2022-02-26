@@ -16,6 +16,9 @@ def get(number):
         z.datum = item[1]
         z.jmeno.set(item[2])
         z.telefon.set(item[3])
+        z.celkemZaMaterial.set(item[4])
+        z.celkemZaPraci.set(item[5])
+        z.celkemZaZakazku.set(item[6])
         zakazky.append(z)
 
         # vozidlo
@@ -82,7 +85,7 @@ def count():
 
 def save(z):
     conn = connector.Connection()
-    conn.execute("INSERT OR REPLACE INTO zakazka VALUES ('{}', '{}', '{}', '{}')".format(z.ID, z.datum, z.jmeno.get(), z.telefon.get()))
+    conn.execute("INSERT OR REPLACE INTO zakazka VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(z.ID, z.datum, z.jmeno.get(), z.telefon.get(), z.celkemZaMaterial.get(), z.celkemZaPraci.get(), z.celkemZaZakazku.get()))
     conn.commit()
 
 
