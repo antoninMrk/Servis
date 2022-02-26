@@ -21,7 +21,10 @@ def get(number):
         z.vozidlo = getVozidloByCisloZakazky(z.ID)
 
         # polozky
-        z.polozky = getPolozky(z.ID)
+        z.polozky = getPolozky(z.ID, "material")
+
+        # prace
+        z.prace = getPolozky(z.ID, "prace")
 
     return zakazky
 
@@ -47,22 +50,23 @@ def getVozidloByCisloZakazky(cisloZakazky):
     return v
 
 
-def getPolozky(cisloZakazky):
+def getPolozky(cisloZakazky, typ):
     conn = connector.Connection()
     c = conn.execute("SELECT * FROM polozka where cisloZakazky=" + cisloZakazky)
     items = c.fetchall()
     polozky = []
     for item in items:
-        polozka = P.Polozka()
-        polozka.ID = item[0]
-        polozka.cislo.set(item[1])
-        polozka.cisloZakazky = item[2]
-        polozka.oznaceni.set(item[3])
-        polozka.mnozstvi.set(item[4])
-        polozka.cenaZaJednotku.set(item[5])
-        polozka.cenaCelkem.set(item[6])
+        if item[7] == typ:
+            polozka = P.Polozka()
+            polozka.ID = item[0]
+            polozka.cislo.set(item[1])
+            polozka.cisloZakazky = item[2]
+            polozka.oznaceni.set(item[3])
+            polozka.mnozstvi.set(item[4])
+            polozka.cenaZaJednotku.set(item[5])
+            polozka.cenaCelkem.set(item[6])
 
-        polozky.append(polozka)
+            polozky.append(polozka)
 
     return polozky
 
@@ -77,7 +81,7 @@ def count():
 
 def save(z):
     conn = connector.Connection()
-    conn.execute("INSERT OR REPLACE INTO zakazka VALUES ('{}', '{}', '{}')".format(z.ID, z.datum, z.jmeno.get()))
+    conn.execute("INSERT OR REPLACE INTO zakazka VALUES ('{}', '{}', '{}', '{}')".format(z.ID, z.datum, z.jmeno.get(), z.telefon.get()))
     conn.commit()
 
 
@@ -108,24 +112,26 @@ def saveVozidlo(v):
     conn.commit()
 
 
-def savePolozku(p):
+def savePolozku(p, typ):
     conn = connector.Connection()
     if p.ID is None:
-        sql = "INSERT INTO polozka (cislo,cisloZakazky,oznaceni,mnozstvi,cenaZaJednotku,cenaCelkem) VALUES ('{}', '{}', '{}', '{}', '{}', '{}')".format(
+        sql = "INSERT INTO polozka (cislo,cisloZakazky,oznaceni,mnozstvi,cenaZaJednotku,cenaCelkem, typ) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             p.cislo.get(),
             p.cisloZakazky,
             p.oznaceni.get(),
             p.mnozstvi.get(),
             p.cenaZaJednotku.get(),
-            p.cenaCelkem.get())
+            p.cenaCelkem.get(),
+            typ)
     else:
-        sql = "INSERT OR REPLACE INTO polozka VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+        sql = "INSERT OR REPLACE INTO polozka VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
             p.ID,
             p.cislo.get(),
             p.cisloZakazky,
             p.oznaceni.get(),
             p.mnozstvi.get(),
             p.cenaZaJednotku.get(),
-            p.cenaCelkem.get())
+            p.cenaCelkem.get(),
+            typ)
     conn.execute(sql)
     conn.commit()

@@ -82,7 +82,6 @@ def tisk(zakazka):
     ws.write("I" + str(index), "Cena celkem")
 
     prace = zakazka.prace
-    index += 1
     for p in prace:
         index += 1
         ws.write("A" + str(index), p.oznaceni.get())
@@ -186,7 +185,10 @@ def novaZakazkaScreen(z, opened):
         db.saveVozidlo(v)
 
         for item in polozky:
-            db.savePolozku(item)
+            db.savePolozku(item, "material")
+
+        for item in prace:
+            db.savePolozku(item, "prace")
 
         novaZakazkaWindow.destroy()
         refresh(opened)
@@ -224,6 +226,8 @@ def novaZakazkaScreen(z, opened):
 
         Label(zakazkaV, text="Jméno").grid(row=0, column=0)
         Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
+        Label(zakazkaV, text="Telefon").grid(row=0, column=1)
+        Entry(zakazkaV, textvariable=z.telefon, justify='center').grid(row=1, column=1)
 
         Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
@@ -236,7 +240,7 @@ def novaZakazkaScreen(z, opened):
         Label(zakazkaV, text="značka").grid(row=4, column=2)
         Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
 
-        Label(zakazkaV, text="typ").grid(row=4, column=3)
+        Label(zakazkaV, text="model").grid(row=4, column=3)
         Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=5, column=3)
 
         Label(zakazkaV, text="motor").grid(row=4, column=4)
@@ -251,7 +255,7 @@ def novaZakazkaScreen(z, opened):
         zakazkaP = Canvas(novaZakazkaWindow)
         zakazkaP.grid()
 
-        Label(zakazkaP, text="Polozky").grid(row=0, column=0)
+        Label(zakazkaP, text="Materiál").grid(row=0, column=0)
         Label(zakazkaP, text="č. položky").grid(row=1, column=0)
         Label(zakazkaP, text="označení položky").grid(row=1, column=1)
         Label(zakazkaP, text="množství").grid(row=1, column=2)
@@ -264,7 +268,7 @@ def novaZakazkaScreen(z, opened):
         zakazkaPrace = Canvas(novaZakazkaWindow)
         zakazkaPrace.grid()
 
-        Label(zakazkaPrace, text="Polozky").grid(row=0, column=0)
+        Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
         Label(zakazkaPrace, text="č. položky").grid(row=1, column=0)
         Label(zakazkaPrace, text="označení položky").grid(row=1, column=1)
         Label(zakazkaPrace, text="množství").grid(row=1, column=2)

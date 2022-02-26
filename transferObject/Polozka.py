@@ -11,3 +11,4 @@ class Polozka:
         self.mnozstvi = StringVar()
         self.cenaZaJednotku = StringVar()
         self.cenaCelkem = StringVar()
+        self.typ = None

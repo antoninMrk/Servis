@@ -8,9 +8,12 @@ class Zakazka:
         self.jmeno = StringVar()
         self.datum = None
         self.polozky = []
+        self.celkemZaMaterial = StringVar()
         self.prace = []
+        self.celkemZaPraci = StringVar()
         self.vozidlo = None
         self.telefon = StringVar()
+
 
     def addPolozka(self, polozka):
         self.polozky.append(polozka)

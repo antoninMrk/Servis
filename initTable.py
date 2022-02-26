@@ -6,7 +6,8 @@ c = conn.cursor()
 c.execute("""CREATE TABLE zakazka (
 ID text,
 datum text, 
-jmeno text 
+jmeno text,
+telefon text
 )""")
 c.execute("""CREATE UNIQUE INDEX zakazka_idx ON zakazka(ID) 
 """)
@@ -17,7 +18,8 @@ cisloZakazky text,
 oznaceni text,
 mnozstvi text,     
 cenaZaJednotku text,     
-cenaCelkem text    
+cenaCelkem text,
+typ text    
 )""")
 c.execute("""CREATE UNIQUE INDEX polozka_idx ON polozka(ID) 
 """)
