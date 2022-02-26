@@ -101,10 +101,9 @@ def tisk(zakazka):
     ws.write("G" + str(index), "Celkem: ")
     ws.write("I" + str(index), zakazka.celkemZaZakazku.get())
 
-
     wb.close()
-    # cwd = os.getcwd()
-    # os.startfile(cwd + "/" + fileName, "print")
+    cwd = os.getcwd()
+    os.startfile(cwd + "/" + fileName, "print")
 
 
 def mainScreen():
@@ -345,10 +344,10 @@ def novaZakazkaScreen(z, opened, edited):
 
         zakazkaK = Canvas(novaZakazkaWindow)
         zakazkaK.grid()
+
         Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
         Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
         Button(zakazkaK, command=lambda za=z: tisk(za), text="Vytisknout").grid(row=50, column=100)
-
 
 
 root = Tk()
