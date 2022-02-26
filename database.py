@@ -6,7 +6,7 @@ import transferObject.Polozka as P
 
 def get():
     conn = connector.Connection()
-    c = conn.execute("SELECT * FROM zakazka")
+    c = conn.execute("SELECT * FROM zakazka ORDER BY zakazka.id desc limit 10")
     e = c.fetchall()
 
     zakazky = []
@@ -35,7 +35,7 @@ def get():
 
 def getVozidloByCisloZakazky(cisloZakazky):
     conn = connector.Connection()
-    c = conn.execute("SELECT * FROM vozidlo where cisloZakazky=" + cisloZakazky)
+    c = conn.execute("SELECT * FROM vozidlo where cisloZakazky=" + str(cisloZakazky))
     e = c.fetchall()
     # print(e)
 
@@ -56,7 +56,7 @@ def getVozidloByCisloZakazky(cisloZakazky):
 
 def getPolozky(cisloZakazky, typ):
     conn = connector.Connection()
-    c = conn.execute("SELECT * FROM polozka where cisloZakazky=" + cisloZakazky)
+    c = conn.execute("SELECT * FROM polozka where cisloZakazky=" + str(cisloZakazky))
     items = c.fetchall()
     polozky = []
     for item in items:

@@ -23,7 +23,7 @@ def refresh(opened):
 
 
 def tisk(zakazka):
-    fileName = "workbook" + zakazka.ID + ".xlsx"
+    fileName = "zakazky/workbook" + str(zakazka.ID) + ".xlsx"
     wb = xlsxwriter.Workbook(fileName)
     ws = wb.add_worksheet("worksheet1")
     center_format = wb.add_format()
@@ -41,7 +41,7 @@ def tisk(zakazka):
     left_format.set_align('left')
     ws.set_column('A:XFD', None, left_format)
 
-    ws.write("A6", "Zakázka: " + zakazka.ID)
+    ws.write("A6", "Zakázka: " + str(zakazka.ID))
     ws.write("D6", "Datum: " + zakazka.datum)
     ws.write("A7", "Jméno: " + zakazka.jmeno.get())
     ws.write("D7", "Telefon: " + zakazka.telefon.get())
@@ -125,6 +125,7 @@ def mainScreen():
 
     cisloRadku = 0
     for zakazka in zakazky:
+
         cisloZakazky = zakazka.ID
         cisloRadku += 1
 

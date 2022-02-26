@@ -4,7 +4,7 @@ conn = sqlite3.connect("servis.db")
 
 c = conn.cursor()
 c.execute("""CREATE TABLE zakazka (
-ID text,
+ID integer,
 datum text, 
 jmeno text,
 telefon text,
