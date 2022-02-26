@@ -169,6 +169,19 @@ def novaZakazkaScreen(z, opened, edited):
         def calculate(var, index, mode):
             if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
                 p.cenaCelkem.set(int(p.mnozstvi.get()) * int(p.cenaZaJednotku.get()))
+                cenaZaMaterial = 0
+                for poloz in z.polozky:
+                    if poloz.cenaCelkem.get() != '':
+                        cenaZaMaterial += int(poloz.cenaCelkem.get())
+
+                z.celkemZaMaterial.set(str(cenaZaMaterial))
+
+                cenaZaPraci = 0
+                for pra in z.prace:
+                    if pra.cenaCelkem.get() != '':
+                        cenaZaPraci += int(pra.cenaCelkem.get())
+
+                z.celkemZaPraci.set(str(cenaZaPraci))
 
         canvasP = Canvas(canvasGroup)
         canvasP.grid(columnspan=5)
@@ -273,7 +286,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
 
         canvasMaterial = Canvas(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=5)
+        canvasMaterial.grid(columnspan=5, sticky="e", padx=168)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Položku").grid(row=1, column=50)
 
@@ -294,7 +307,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="cena celkem").grid(row=1, column=4)
 
         canvasPrace = Canvas(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=5)
+        canvasPrace.grid(columnspan=5, sticky="e", padx=168)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1,
                                                                                                              column=50)
