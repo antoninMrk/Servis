@@ -4,9 +4,9 @@ import transferObject.Vozidlo as V
 import transferObject.Polozka as P
 
 
-def get(number):
+def get():
     conn = connector.Connection()
-    c = conn.execute("SELECT * FROM zakazka LIMIT " + number)
+    c = conn.execute("SELECT * FROM zakazka")
     e = c.fetchall()
 
     zakazky = []

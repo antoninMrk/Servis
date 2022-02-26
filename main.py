@@ -111,7 +111,7 @@ def mainScreen():
     edited = Boolean(False)
 
     Label(canvas, text="Zakázky").grid()
-    zakazky = db.get("10")
+    zakazky = db.get()
 
     canvasZ = Canvas(canvas)
     canvasZ.grid()
@@ -123,9 +123,10 @@ def mainScreen():
     Label(canvasZ, text="Typ").grid(row=0, column=5)
     Label(canvasZ, text="Datum").grid(row=0, column=6)
 
+    cisloRadku = 0
     for zakazka in zakazky:
         cisloZakazky = zakazka.ID
-        cisloRadku = int(cisloZakazky) + 1
+        cisloRadku += 1
 
         v = zakazka.vozidlo
 
@@ -352,7 +353,8 @@ def novaZakazkaScreen(z, opened, edited):
 
 root = Tk()
 root.title("Servis")
-root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
+root.state("zoomed")
+# root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 # root.attributes("-fullscreen", True)
 
 canvas = Canvas(root)
