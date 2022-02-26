@@ -204,7 +204,7 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasP, textvariable=p.oznaceni, justify='center').grid(row=2, column=1)
         Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2)
         Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3)
-        Entry(canvasP, textvariable=p.cenaCelkem, justify='center').grid(row=2, column=4)
+        Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4)
         p.mnozstvi.trace("w", calculate)
         p.cenaZaJednotku.trace("w", calculate)
 
@@ -312,7 +312,7 @@ def novaZakazkaScreen(z, opened, edited):
             pridatPolozku(zakazkaP, polozky)
 
         Label(canvasMaterial, text="Celkem za Material").grid(row=50, column=3)
-        Entry(canvasMaterial, textvariable=z.celkemZaMaterial, justify='center').grid(row=50, column=4)
+        Entry(canvasMaterial, textvariable=z.celkemZaMaterial, state='disabled', justify='center').grid(row=50, column=4)
 
         zakazkaPrace = Canvas(novaZakazkaWindow)
         zakazkaPrace.grid()
@@ -329,21 +329,26 @@ def novaZakazkaScreen(z, opened, edited):
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1,
                                                                                                              column=50)
-        for prac in prace:
-            showPolozku(prac, zakazkaPrace)
+        hasPraci = False
 
-        pridatPolozku(zakazkaPrace, prace)
+        for prac in prace:
+            hasPraci = True
+            showPolozku(prac, zakazkaPrace)
+        if not hasPraci:
+            pridatPolozku(zakazkaPrace, prace)
 
         Label(canvasPrace, text="Celkem za práci").grid(row=50, column=3)
-        Entry(canvasPrace, textvariable=z.celkemZaPraci, justify='center').grid(row=50, column=4)
+        Entry(canvasPrace, textvariable=z.celkemZaPraci, state='disabled', justify='center').grid(row=50, column=4)
 
         Label(canvasPrace, text="Celkem").grid(row=51, column=3)
-        Entry(canvasPrace, textvariable=z.celkemZaZakazku, justify='center').grid(row=51, column=4)
+        Entry(canvasPrace, textvariable=z.celkemZaZakazku, state='disabled', justify='center').grid(row=51, column=4)
 
         zakazkaK = Canvas(novaZakazkaWindow)
         zakazkaK.grid()
-        Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
         Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
+        Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
+        Button(zakazkaK, command=lambda za=z: tisk(za), text="Vytisknout").grid(row=50, column=100)
+
 
 
 root = Tk()
