@@ -7,6 +7,8 @@ from tkinter import messagebox
 from datetime import date
 import os
 import xlsxwriter
+from tkinter import ttk
+
 
 
 class Boolean(object):
@@ -19,7 +21,9 @@ def refresh(opened):
     canvas.destroy()
     canvas.__init__()
     canvas.grid()
-    mainScreen()
+    zk = db.get()
+    cli = mainScreen(zk)
+    searchScreen(cli)
 
 
 def tisk(zakazka):
@@ -106,14 +110,36 @@ def tisk(zakazka):
     os.startfile(cwd + "/" + fileName, "print")
 
 
-def mainScreen():
+def searchByClient(effects, searchListBox):
+    selectedClient = searchListBox.get(searchListBox.curselection())
+
+
+def searchScreen(clients):
+    searchFrame = Frame(canvas)
+    searchFrame.grid(row=0, column=1, sticky="n")
+
+    Label(searchFrame, text="Hledání").grid(columnspan=10)
+    Label(searchFrame, text="Hledat podle jména").grid(row=1, column=0)
+
+    n = StringVar()
+
+    clientCombo = ttk.Combobox(searchFrame, textvariable=n)
+    clientCombo.grid()
+
+    for item in clients:
+        clientCombo.set(item)
+
+
+def mainScreen(zakazky):
     opened = Boolean(True)
     edited = Boolean(False)
 
-    Label(canvas, text="Zakázky").grid()
-    zakazky = db.get()
+    mainScreenFrame = Frame(canvas)
+    mainScreenFrame.grid(row=0, column=0)
 
-    canvasZ = Canvas(canvas)
+    Label(mainScreenFrame, text="Zakázky").grid()
+
+    canvasZ = Frame(mainScreenFrame)
     canvasZ.grid()
     Label(canvasZ, text="Číslo zakázky").grid(row=0, column=0)
     Label(canvasZ, text="Klient").grid(row=0, column=1)
@@ -123,9 +149,9 @@ def mainScreen():
     Label(canvasZ, text="Typ").grid(row=0, column=5)
     Label(canvasZ, text="Datum").grid(row=0, column=6)
 
+    clients = []
     cisloRadku = 0
     for zakazka in zakazky:
-
         cisloZakazky = zakazka.ID
         cisloRadku += 1
 
@@ -133,7 +159,7 @@ def mainScreen():
 
         Label(canvasZ, text=cisloZakazky).grid(row=cisloRadku, column=0)
         Label(canvasZ, text=zakazka.jmeno.get()).grid(row=cisloRadku, column=1)
-
+        clients.append(zakazka.jmeno.get())
         # vozidlo
         Label(canvasZ, text=v.SPZ.get()).grid(row=cisloRadku, column=2)
         Label(canvasZ, text=v.VIN.get()).grid(row=cisloRadku, column=3)
@@ -147,7 +173,9 @@ def mainScreen():
             row=cisloRadku, column=7)
         Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
-    Button(canvas, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nova Zakázka").grid(row=50, column=0)
+    Button(mainScreenFrame, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nova Zakázka").grid(row=50,
+                                                                                                              column=0)
+    return clients
 
 
 def getNextNumber():
@@ -196,9 +224,9 @@ def novaZakazkaScreen(z, opened, edited):
                         cenaZaPraci += int(pra.cenaCelkem.get())
 
                 z.celkemZaPraci.set(str(cenaZaPraci))
-                z.celkemZaZakazku.set(str(int(cenaZaMaterial)+int(cenaZaPraci)))
+                z.celkemZaZakazku.set(str(int(cenaZaMaterial) + int(cenaZaPraci)))
 
-        canvasP = Canvas(canvasGroup)
+        canvasP = Frame(canvasGroup)
         canvasP.grid(columnspan=5)
 
         Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center').grid(row=2, column=0)
@@ -247,7 +275,7 @@ def novaZakazkaScreen(z, opened, edited):
         novaZakazkaWindow.protocol("WM_DELETE_WINDOW", zavrit)
         novaZakazkaWindow.bind("<Key>", updated)
 
-        zakazkaC = Canvas(novaZakazkaWindow)
+        zakazkaC = Frame(novaZakazkaWindow)
         zakazkaC.grid()
 
         Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
@@ -259,7 +287,7 @@ def novaZakazkaScreen(z, opened, edited):
         datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
         Label(zakazkaC, text=datum).grid(row=1, column=3)
 
-        zakazkaV = Canvas(novaZakazkaWindow)
+        zakazkaV = Frame(novaZakazkaWindow)
         zakazkaV.grid()
 
         Label(zakazkaV, text="Jméno").grid(row=0, column=0)
@@ -290,7 +318,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaV, text="tachometr").grid(row=4, column=6)
         Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
 
-        zakazkaP = Canvas(novaZakazkaWindow)
+        zakazkaP = Frame(novaZakazkaWindow)
         zakazkaP.grid()
 
         Label(zakazkaP, text="Materiál").grid(row=0, column=0)
@@ -300,7 +328,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
         Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
 
-        canvasMaterial = Canvas(novaZakazkaWindow)
+        canvasMaterial = Frame(novaZakazkaWindow)
         canvasMaterial.grid(columnspan=5, sticky="e", padx=168)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Položku").grid(row=1, column=50)
@@ -313,9 +341,10 @@ def novaZakazkaScreen(z, opened, edited):
             pridatPolozku(zakazkaP, polozky)
 
         Label(canvasMaterial, text="Celkem za Material").grid(row=50, column=3)
-        Entry(canvasMaterial, textvariable=z.celkemZaMaterial, state='disabled', justify='center').grid(row=50, column=4)
+        Entry(canvasMaterial, textvariable=z.celkemZaMaterial, state='disabled', justify='center').grid(row=50,
+                                                                                                        column=4)
 
-        zakazkaPrace = Canvas(novaZakazkaWindow)
+        zakazkaPrace = Frame(novaZakazkaWindow)
         zakazkaPrace.grid()
 
         Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
@@ -325,7 +354,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="cena za jednotku").grid(row=1, column=3)
         Label(zakazkaPrace, text="cena celkem").grid(row=1, column=4)
 
-        canvasPrace = Canvas(novaZakazkaWindow)
+        canvasPrace = Frame(novaZakazkaWindow)
         canvasPrace.grid(columnspan=5, sticky="e", padx=168)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1,
@@ -344,7 +373,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(canvasPrace, text="Celkem").grid(row=51, column=3)
         Entry(canvasPrace, textvariable=z.celkemZaZakazku, state='disabled', justify='center').grid(row=51, column=4)
 
-        zakazkaK = Canvas(novaZakazkaWindow)
+        zakazkaK = Frame(novaZakazkaWindow)
         zakazkaK.grid()
 
         Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
@@ -358,10 +387,13 @@ root.state("zoomed")
 # root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 # root.attributes("-fullscreen", True)
 
-canvas = Canvas(root)
+canvas = Frame(root)
 canvas.grid()
 
-mainScreen()
+zakazkyZDB = db.get()
+
+cl = mainScreen(zakazkyZDB)
+searchScreen(cl)
 
 # b = tk.Button(root, text="X", command=quit, bg="red", fg="white")
 # b.grid(row=0, column=10)
