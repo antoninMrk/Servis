@@ -15,6 +15,7 @@ def get(number):
         z.ID = item[0]
         z.datum = item[1]
         z.jmeno.set(item[2])
+        z.telefon.set(item[3])
         zakazky.append(z)
 
         # vozidlo

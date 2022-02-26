@@ -96,6 +96,7 @@ def tisk(zakazka):
 
 def mainScreen():
     opened = Boolean(True)
+    edited = Boolean(False)
 
     Label(canvas, text="Zakázky").grid()
     zakazky = db.get("10")
@@ -128,18 +129,18 @@ def mainScreen():
         datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
         Label(canvasZ, text=datum).grid(row=cisloRadku, column=6)
 
-        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za, opened), text="Upravit").grid(row=cisloRadku,
-                                                                                                       column=7)
+        Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za, opened, edited), text="Upravit").grid(
+            row=cisloRadku, column=7)
         Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
-    Button(canvas, command=lambda: novaZakazkaScreenInit(opened), text="Nova Zakázka").grid(row=50, column=0)
+    Button(canvas, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nova Zakázka").grid(row=50, column=0)
 
 
 def getNextNumber():
     return str(int(db.count()[0][0]) + 1)
 
 
-def novaZakazkaScreenInit(opened):
+def novaZakazkaScreenInit(opened, edited):
     cisloZakazky = getNextNumber()
 
     z = Z.Zakazka()
@@ -152,10 +153,10 @@ def novaZakazkaScreenInit(opened):
     z.polozky = []
     z.vozidlo = v
 
-    novaZakazkaScreen(z, opened)
+    novaZakazkaScreen(z, opened, edited)
 
 
-def novaZakazkaScreen(z, opened):
+def novaZakazkaScreen(z, opened, edited):
     def pridatPolozku(canvasGroup, item):
         p = polozka.Polozka()
         p.cisloZakazky = z.ID
@@ -194,11 +195,19 @@ def novaZakazkaScreen(z, opened):
         refresh(opened)
 
     def zavrit():
-        # todo dialogove okno (ano/ne - data budou deleted)
-        if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZměny nebudou uloženy!",
-                                  parent=novaZakazkaWindow):
+        destroy = True
+        if edited.val:
+            if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZměny nebudou uloženy!",
+                                      parent=novaZakazkaWindow):
+                destroy = True
+            else:
+                destroy = False
+        if destroy:
             novaZakazkaWindow.destroy()
             refresh(opened)
+
+    def updated(self):
+        edited.val = True
 
     if opened.val:
         opened.val = False
@@ -208,6 +217,7 @@ def novaZakazkaScreen(z, opened):
         novaZakazkaWindow = Toplevel(root)
         novaZakazkaWindow.title("Nová Zakázka")
         novaZakazkaWindow.protocol("WM_DELETE_WINDOW", zavrit)
+        novaZakazkaWindow.bind("<Key>", updated)
 
         zakazkaC = Canvas(novaZakazkaWindow)
         zakazkaC.grid()
@@ -286,7 +296,8 @@ def novaZakazkaScreen(z, opened):
         canvasPrace = Canvas(novaZakazkaWindow)
         canvasPrace.grid(columnspan=5)
 
-        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1, column=50)
+        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1,
+                                                                                                             column=50)
         for prac in prace:
             showPolozku(prac, zakazkaPrace)
 
