@@ -41,22 +41,54 @@ def tisk(zakazka):
     left_format.set_align('left')
     ws.set_column('A:XFD', None, left_format)
 
-    ws.write("A6", "Zakázka: "+zakazka.ID)
-    ws.write("D6", "Datum: "+zakazka.datum)
-    ws.write("A7", "Jméno: "+zakazka.jmeno.get())
-    ws.write("D7", "Telefon: "+zakazka.telefon.get())
+    ws.write("A6", "Zakázka: " + zakazka.ID)
+    ws.write("D6", "Datum: " + zakazka.datum)
+    ws.write("A7", "Jméno: " + zakazka.jmeno.get())
+    ws.write("D7", "Telefon: " + zakazka.telefon.get())
 
     auto = zakazka.vozidlo
     ws.write("A9", "Vozidlo")
-    ws.write("A10", "SPZ: "+auto.SPZ.get())
-    ws.write("C10", "VIN: "+auto.VIN.get())
-    ws.write("F10", "Značka: "+auto.znacka.get())
-    ws.write("I10", "Model: "+auto.typ.get())
-    ws.write("A11", "Motor: "+auto.motor.get())
-    ws.write("C11", "r.v.: "+auto.rokVyroby.get())
-    ws.write("F11", "Tachometr: "+auto.tachometr.get())
+    ws.write("A10", "SPZ: " + auto.SPZ.get())
+    ws.write("C10", "VIN: " + auto.VIN.get())
+    ws.write("F10", "Značka: " + auto.znacka.get())
+    ws.write("I10", "Model: " + auto.typ.get())
+    ws.write("A11", "Motor: " + auto.motor.get())
+    ws.write("C11", "r.v.: " + auto.rokVyroby.get())
+    ws.write("F11", "Tachometr: " + auto.tachometr.get())
 
-    
+    # material
+    ws.write("A13", "Material")
+    ws.write("A14", "Položka")
+    ws.write("D14", "Množství")
+    ws.write("F14", "Cena za jednotku")
+    ws.write("I14", "Cena celkem")
+
+    polozky = zakazka.polozky
+    index = 14
+    for pol in polozky:
+        index += 1
+        ws.write("A" + str(index), pol.oznaceni.get())
+        ws.write("D" + str(index), pol.mnozstvi.get())
+        ws.write("F" + str(index), pol.cenaZaJednotku.get())
+        ws.write("I" + str(index), pol.cenaCelkem.get())
+
+    # práce
+    index += 2
+    ws.write("A" + str(index), "Práce")
+    index += 1
+    ws.write("A" + str(index), "Položka")
+    ws.write("D" + str(index), "Množství")
+    ws.write("F" + str(index), "Cena za jednotku")
+    ws.write("I" + str(index), "Cena celkem")
+
+    prace = zakazka.prace
+    index += 1
+    for p in prace:
+        index += 1
+        ws.write("A" + str(index), p.oznaceni.get())
+        ws.write("D" + str(index), p.mnozstvi.get())
+        ws.write("F" + str(index), p.cenaZaJednotku.get())
+        ws.write("I" + str(index), p.cenaCelkem.get())
 
     wb.close()
     # cwd = os.getcwd()
@@ -161,7 +193,8 @@ def novaZakazkaScreen(z, opened):
 
     def zavrit():
         # todo dialogove okno (ano/ne - data budou deleted)
-        if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZakázka nebude uložena!", parent=novaZakazkaWindow):
+        if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZměny nebudou uloženy!",
+                                  parent=novaZakazkaWindow):
             novaZakazkaWindow.destroy()
             refresh(opened)
 
