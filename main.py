@@ -261,9 +261,17 @@ def novaZakazkaScreen(z, opened):
         Label(zakazkaP, text="množství").grid(row=1, column=2)
         Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
         Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
+
+        canvasMaterial = Canvas(novaZakazkaWindow)
+        canvasMaterial.grid(columnspan=5)
+
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Položku").grid(row=1, column=50)
+
         for pol in z.polozky:
             showPolozku(pol, zakazkaP)
+
+        Label(canvasMaterial, text="Celkem za Material").grid(row=50, column=3)
+        Entry(canvasMaterial, textvariable=z.celkemZaMaterial, justify='center').grid(row=50, column=4)
 
         zakazkaPrace = Canvas(novaZakazkaWindow)
         zakazkaPrace.grid()
@@ -274,9 +282,16 @@ def novaZakazkaScreen(z, opened):
         Label(zakazkaPrace, text="množství").grid(row=1, column=2)
         Label(zakazkaPrace, text="cena za jednotku").grid(row=1, column=3)
         Label(zakazkaPrace, text="cena celkem").grid(row=1, column=4)
+
+        canvasPrace = Canvas(novaZakazkaWindow)
+        canvasPrace.grid(columnspan=5)
+
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1, column=50)
         for prac in prace:
             showPolozku(prac, zakazkaPrace)
+
+        Label(canvasPrace, text="Celkem za práci").grid(row=50, column=3)
+        Entry(canvasPrace, textvariable=z.celkemZaPraci, justify='center').grid(row=50, column=4)
 
         zakazkaK = Canvas(novaZakazkaWindow)
         zakazkaK.grid()
