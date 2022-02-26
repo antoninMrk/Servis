@@ -8,7 +8,17 @@ def get():
     conn = connector.Connection()
     c = conn.execute("SELECT * FROM zakazka ORDER BY zakazka.id desc limit 10")
     e = c.fetchall()
+    return convertToZakazky(e)
 
+
+def getByClient(client):
+    conn = connector.Connection()
+    c = conn.execute("SELECT * FROM zakazka where zakazka.jmeno='"+client+"' ORDER BY zakazka.id desc limit 10")
+    e = c.fetchall()
+    return convertToZakazky(e)
+
+
+def convertToZakazky(e):
     zakazky = []
     for item in e:
         z = Z.Zakazka()
@@ -31,7 +41,6 @@ def get():
         z.prace = getPolozky(z.ID, "prace")
 
     return zakazky
-
 
 def getVozidloByCisloZakazky(cisloZakazky):
     conn = connector.Connection()

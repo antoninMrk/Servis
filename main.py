@@ -10,7 +10,6 @@ import xlsxwriter
 from tkinter import ttk
 
 
-
 class Boolean(object):
     def __init__(self, val):
         self.val = val
@@ -18,12 +17,23 @@ class Boolean(object):
 
 def refresh(opened):
     opened.val = True
+
     canvas.destroy()
     canvas.__init__()
     canvas.grid()
+
+    searchFrame.destroy()
+    searchFrame.__init__()
+    searchFrame.grid()
+
+    mainScreenFrame.destroy()
+    mainScreenFrame.__init__()
+    mainScreenFrame.grid()
+
+    combo = searchScreen()
     zk = db.get()
-    cli = mainScreen(zk)
-    searchScreen(cli)
+    cls = mainScreen(zk)
+    combo['values'] = cls
 
 
 def tisk(zakazka):
@@ -110,14 +120,23 @@ def tisk(zakazka):
     os.startfile(cwd + "/" + fileName, "print")
 
 
-def searchByClient(effects, searchListBox):
-    selectedClient = searchListBox.get(searchListBox.curselection())
+def searchByClient(event, combobox):
+    client = combobox.get()
+    # refresh
+    mainScreenFrame.destroy()
+    mainScreenFrame.__init__()
+    mainScreenFrame.grid()
+
+    if client == "Všechny":
+        zakazkyZDB = db.get()
+        mainScreen(zakazkyZDB)
+
+    else:
+        zakazkyByClient = db.getByClient(client)
+        mainScreen(zakazkyByClient)
 
 
-def searchScreen(clients):
-    searchFrame = Frame(canvas)
-    searchFrame.grid(row=0, column=1, sticky="n")
-
+def searchScreen():
     Label(searchFrame, text="Hledání").grid(columnspan=10)
     Label(searchFrame, text="Hledat podle jména").grid(row=1, column=0)
 
@@ -125,17 +144,13 @@ def searchScreen(clients):
 
     clientCombo = ttk.Combobox(searchFrame, textvariable=n)
     clientCombo.grid()
-
-    for item in clients:
-        clientCombo.set(item)
+    clientCombo.bind("<<ComboboxSelected>>", lambda x=None: searchByClient(x, clientCombo))
+    return clientCombo
 
 
 def mainScreen(zakazky):
     opened = Boolean(True)
     edited = Boolean(False)
-
-    mainScreenFrame = Frame(canvas)
-    mainScreenFrame.grid(row=0, column=0)
 
     Label(mainScreenFrame, text="Zakázky").grid()
 
@@ -174,7 +189,7 @@ def mainScreen(zakazky):
         Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
     Button(mainScreenFrame, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nova Zakázka").grid(row=50,
-                                                                                                              column=0)
+                                                                                                             column=0)
     return clients
 
 
@@ -390,10 +405,18 @@ root.state("zoomed")
 canvas = Frame(root)
 canvas.grid()
 
+searchFrame = Frame(canvas)
+searchFrame.grid()
+
+mainScreenFrame = Frame(canvas)
+mainScreenFrame.grid()
+
 zakazkyZDB = db.get()
 
+clientC = searchScreen()
 cl = mainScreen(zakazkyZDB)
-searchScreen(cl)
+cl.insert(0, "Všechny")
+clientC['values'] = cl
 
 # b = tk.Button(root, text="X", command=quit, bg="red", fg="white")
 # b.grid(row=0, column=10)
