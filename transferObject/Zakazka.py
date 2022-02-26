@@ -9,6 +9,7 @@ class Zakazka:
         self.datum = None
         self.polozky = []
         self.vozidlo = None
+        self.telefon = StringVar()
 
     def addPolozka(self, polozka):
         self.polozky.append(polozka)

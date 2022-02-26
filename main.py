@@ -26,10 +26,41 @@ def tisk(zakazka):
     fileName = "workbook" + zakazka.ID + ".xlsx"
     wb = xlsxwriter.Workbook(fileName)
     ws = wb.add_worksheet("worksheet1")
-    ws.write("A1", zakazka.jmeno.get())
+    center_format = wb.add_format()
+    center_format.set_align('center')
+
+    # A-J
+    # 1-48 včetně
+    # hlavička
+    ws.write("F1", "Michal Frohlich", center_format)
+    ws.write("F2", "Adresa: 691 62, Uherčice 159", center_format)
+    ws.write("F3", "TEL: 723 891 750", center_format)
+    ws.write("F4", "IČO: 1002249473", center_format)
+
+    left_format = wb.add_format()
+    left_format.set_align('left')
+    ws.set_column('A:XFD', None, left_format)
+
+    ws.write("A6", "Zakázka: "+zakazka.ID)
+    ws.write("D6", "Datum: "+zakazka.datum)
+    ws.write("A7", "Jméno: "+zakazka.jmeno.get())
+    ws.write("D7", "Telefon: "+zakazka.telefon.get())
+
+    auto = zakazka.vozidlo
+    ws.write("A9", "Vozidlo")
+    ws.write("A10", "SPZ: "+auto.SPZ.get())
+    ws.write("C10", "VIN: "+auto.VIN.get())
+    ws.write("F10", "Značka: "+auto.znacka.get())
+    ws.write("I10", "Model: "+auto.typ.get())
+    ws.write("A11", "Motor: "+auto.motor.get())
+    ws.write("C11", "r.v.: "+auto.rokVyroby.get())
+    ws.write("F11", "Tachometr: "+auto.tachometr.get())
+
+    
+
     wb.close()
-    cwd = os.getcwd()
-    os.startfile(cwd + "/" + fileName, "print")
+    # cwd = os.getcwd()
+    # os.startfile(cwd + "/" + fileName, "print")
 
 
 def mainScreen():
