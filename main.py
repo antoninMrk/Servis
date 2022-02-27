@@ -33,6 +33,7 @@ def refresh(opened):
     combo = searchScreen()
     zk = db.get()
     cls = mainScreen(zk)
+    cls.insert(0, "Všechny")
     combo['values'] = cls
 
 
@@ -95,8 +96,8 @@ def tisk(zakazka):
     ws.write("A" + str(index), "Práce")
     index += 1
     ws.write("A" + str(index), "Položka")
-    ws.write("D" + str(index), "Množství")
-    ws.write("F" + str(index), "Cena za jednotku")
+    ws.write("D" + str(index), "Počet Nh")
+    ws.write("F" + str(index), "Cena za Nh")
     ws.write("I" + str(index), "Cena celkem")
 
     prace = zakazka.prace
@@ -364,9 +365,9 @@ def novaZakazkaScreen(z, opened, edited):
 
         Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
         Label(zakazkaPrace, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaPrace, text="označení položky").grid(row=1, column=1)
-        Label(zakazkaPrace, text="množství").grid(row=1, column=2)
-        Label(zakazkaPrace, text="cena za jednotku").grid(row=1, column=3)
+        Label(zakazkaPrace, text="označení práce").grid(row=1, column=1)
+        Label(zakazkaPrace, text="počet Nh").grid(row=1, column=2)
+        Label(zakazkaPrace, text="cena za Nh").grid(row=1, column=3)
         Label(zakazkaPrace, text="cena celkem").grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
