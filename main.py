@@ -30,11 +30,9 @@ def refresh(opened):
     mainScreenFrame.__init__()
     mainScreenFrame.grid()
 
-    combo = searchScreen()
+    searchScreen()
     zk = db.get()
-    cls = mainScreen(zk)
-    cls.insert(0, "Všechny")
-    combo['values'] = cls
+    mainScreen(zk)
 
 
 def tisk(zakazka):
@@ -121,32 +119,45 @@ def tisk(zakazka):
     os.startfile(cwd + "/" + fileName, "print")
 
 
-def searchByClient(event, combobox):
-    client = combobox.get()
+def search(combobox, searchableEntry):
+    searchBy = combobox.get()
+    hledanyVyraz = searchableEntry.get()
+
+    if searchBy == "Jméno":
+        zak = db.getByClient(hledanyVyraz)
+        refreshMainScreen(zak)
+    elif searchBy == "VIN":
+        zak = db.getByVIN(hledanyVyraz)
+        refreshMainScreen(zak)
+    elif searchBy == "SPZ":
+        zak = db.getBySPZ(hledanyVyraz)
+        refreshMainScreen(zak)
+    else:
+        refreshMainScreen(zakazkyZDB)
+
+
+def refreshMainScreen(zak):
     # refresh
     mainScreenFrame.destroy()
     mainScreenFrame.__init__()
     mainScreenFrame.grid()
 
-    if client == "Všechny":
-        zakazkyZDB = db.get()
-        mainScreen(zakazkyZDB)
-
-    else:
-        zakazkyByClient = db.getByClient(client)
-        mainScreen(zakazkyByClient)
+    mainScreen(zak)
 
 
 def searchScreen():
     Label(searchFrame, text="Hledání").grid(columnspan=10)
-    Label(searchFrame, text="Hledat podle jména").grid(row=1, column=0)
 
     n = StringVar()
+    clientCombo = ttk.Combobox(searchFrame, textvariable=n, justify='center')
+    clientCombo.grid(row=2, column=0)
+    clientCombo['values'] = ["", "Jméno", "VIN", "SPZ"]
 
-    clientCombo = ttk.Combobox(searchFrame, textvariable=n)
-    clientCombo.grid()
-    clientCombo.bind("<<ComboboxSelected>>", lambda x=None: searchByClient(x, clientCombo))
-    return clientCombo
+    m = StringVar()
+
+    Entry(searchFrame, textvariable=m, justify='center').grid(row=3, column=0)
+    Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
+        row=4, column=0)
 
 
 def mainScreen(zakazky):
@@ -414,10 +425,8 @@ mainScreenFrame.grid()
 
 zakazkyZDB = db.get()
 
-clientC = searchScreen()
-cl = mainScreen(zakazkyZDB)
-cl.insert(0, "Všechny")
-clientC['values'] = cl
+searchScreen()
+mainScreen(zakazkyZDB)
 
 # b = tk.Button(root, text="X", command=quit, bg="red", fg="white")
 # b.grid(row=0, column=10)
