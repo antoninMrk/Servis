@@ -167,11 +167,10 @@ def searchScreen():
 
     n = StringVar()
     clientCombo = ttk.Combobox(searchFrame, textvariable=n, justify='center', state="readonly")
-    clientCombo.grid(row=2, column=0)
     clientCombo['values'] = ["", "Jméno", "VIN", "SPZ"]
+    clientCombo.grid(row=2, column=0)
 
     m = StringVar()
-
     Entry(searchFrame, textvariable=m, justify='center').grid(row=3, column=0)
     Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
         row=4, column=0)
