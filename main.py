@@ -60,7 +60,9 @@ def tisk(zakazka):
     ws.set_column('A:XFD', None, left_format)
 
     ws.write("A6", "Zakázka: " + str(zakazka.ID))
-    ws.write("D6", "Datum: " + zakazka.datum)
+    datumSplit = zakazka.datum.split('-')
+    datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
+    ws.write("D6", "Datum: " + datum)
     ws.write("A7", "Jméno: " + zakazka.jmeno.get())
     ws.write("D7", "Telefon: " + zakazka.telefon.get())
 
@@ -283,10 +285,10 @@ def novaZakazkaScreen(z, opened, edited):
                 z.celkemZaZakazku.set(str(int(cenaZaMaterial) + int(cenaZaPraci)))
 
         canvasP = Frame(canvasGroup)
-        canvasP.grid(columnspan=5)
+        canvasP.grid(columnspan=10, sticky=W)
 
-        Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center').grid(row=2, column=0)
-        Entry(canvasP, textvariable=p.oznaceni, justify='center').grid(row=2, column=1)
+        Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0)
+        Entry(canvasP, textvariable=p.oznaceni, justify='center', width=50).grid(row=2, column=1)
         Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2)
         Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3)
         Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4)
@@ -332,7 +334,7 @@ def novaZakazkaScreen(z, opened, edited):
         novaZakazkaWindow.bind("<Key>", updated)
 
         zakazkaC = Frame(novaZakazkaWindow)
-        zakazkaC.grid()
+        zakazkaC.grid(sticky=W, columnspan=10)
 
         Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
 
@@ -344,7 +346,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaC, text=datum).grid(row=1, column=3)
 
         zakazkaV = Frame(novaZakazkaWindow)
-        zakazkaV.grid()
+        zakazkaV.grid(sticky=W, columnspan=10)
 
         Label(zakazkaV, text="Jméno").grid(row=0, column=0)
         Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
@@ -357,6 +359,7 @@ def novaZakazkaScreen(z, opened, edited):
         spzEntry = Entry(zakazkaV, textvariable=v.SPZ, justify='center')
         spzEntry.grid(row=5, column=0)
         spzEntry.bind("<FocusOut>", findAndSetVehicle)
+        # novaZakazkaWindow.bind("<Key>", findAndSetVehicle)
 
         Label(zakazkaV, text="VIN").grid(row=4, column=1)
         Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)
@@ -377,19 +380,19 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
 
         zakazkaP = Frame(novaZakazkaWindow)
-        zakazkaP.grid()
+        zakazkaP.grid(sticky=W, columnspan=10)
 
         Label(zakazkaP, text="Materiál").grid(row=0, column=0)
         Label(zakazkaP, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaP, text="označení položky").grid(row=1, column=1)
-        Label(zakazkaP, text="množství").grid(row=1, column=2)
-        Label(zakazkaP, text="cena za jednotku").grid(row=1, column=3)
-        Label(zakazkaP, text="cena celkem").grid(row=1, column=4)
+        Label(zakazkaP, text="Označení položky", width=42).grid(row=1, column=1)
+        Label(zakazkaP, text="Množství", width=15).grid(row=1, column=2)
+        Label(zakazkaP, text="Cena za jednotku", width=20).grid(row=1, column=3)
+        Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=5, sticky="e", padx=168)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=140)
 
-        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Položku").grid(row=1, column=50)
+        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1, column=50)
 
         hasPolozku = False
         for pol in z.polozky:
@@ -403,19 +406,19 @@ def novaZakazkaScreen(z, opened, edited):
                                                                                                         column=4)
 
         zakazkaPrace = Frame(novaZakazkaWindow)
-        zakazkaPrace.grid()
+        zakazkaPrace.grid(sticky=W, columnspan=10)
 
         Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
         Label(zakazkaPrace, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaPrace, text="označení práce").grid(row=1, column=1)
-        Label(zakazkaPrace, text="počet Nh").grid(row=1, column=2)
-        Label(zakazkaPrace, text="cena za Nh").grid(row=1, column=3)
-        Label(zakazkaPrace, text="cena celkem").grid(row=1, column=4)
+        Label(zakazkaPrace, text="Označení práce", width=42).grid(row=1, column=1)
+        Label(zakazkaPrace, text="Počet Nh", width=15).grid(row=1, column=2)
+        Label(zakazkaPrace, text="Cena za Nh", width=20).grid(row=1, column=3)
+        Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=5, sticky="e", padx=168)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=140)
 
-        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="Přidat Položku").grid(row=1,
+        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                              column=50)
         hasPraci = False
 
@@ -432,7 +435,7 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasPrace, textvariable=z.celkemZaZakazku, state='disabled', justify='center').grid(row=51, column=4)
 
         zakazkaK = Frame(novaZakazkaWindow)
-        zakazkaK.grid()
+        zakazkaK.grid(columnspan=10)
 
         Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
         Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
