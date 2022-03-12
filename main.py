@@ -267,21 +267,21 @@ def novaZakazkaScreen(z, opened, edited):
     def showPolozku(p, canvasGroup):
         def calculate(var, index, mode):
             if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
-                p.cenaCelkem.set(int(p.mnozstvi.get()) * int(p.cenaZaJednotku.get()))
+                p.cenaCelkem.set(float(p.mnozstvi.get().replace(",", ".")) * float(p.cenaZaJednotku.get().replace(",", ".")))
                 cenaZaMaterial = 0
                 for poloz in z.polozky:
                     if poloz.cenaCelkem.get() != '':
-                        cenaZaMaterial += int(poloz.cenaCelkem.get())
+                        cenaZaMaterial += float(poloz.cenaCelkem.get())
 
                 z.celkemZaMaterial.set(str(cenaZaMaterial))
 
                 cenaZaPraci = 0
                 for pra in z.prace:
                     if pra.cenaCelkem.get() != '':
-                        cenaZaPraci += int(pra.cenaCelkem.get())
+                        cenaZaPraci += float(pra.cenaCelkem.get())
 
                 z.celkemZaPraci.set(str(cenaZaPraci))
-                z.celkemZaZakazku.set(str(int(cenaZaMaterial) + int(cenaZaPraci)))
+                z.celkemZaZakazku.set(str(float(cenaZaMaterial) + float(cenaZaPraci)))
 
         canvasP = Frame(canvasGroup)
         canvasP.grid(columnspan=10, sticky=W)
