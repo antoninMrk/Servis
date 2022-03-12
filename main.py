@@ -42,13 +42,18 @@ def tisk(zakazka):
     center_format = wb.add_format()
     center_format.set_align('center')
 
+    border_up_format = wb.add_format()
+    border_up_format.set_top()
     # A-J
     # 1-48 včetně
     # hlavička
-    ws.write("F1", "Michal Frohlich", center_format)
-    ws.write("F2", "Adresa: 691 62, Uherčice 159", center_format)
-    ws.write("F3", "TEL: 723 891 750", center_format)
-    ws.write("F4", "IČO: 1002249473", center_format)
+    ws.merge_range("E1:F1","Michal Frohlich", center_format)
+    # ws.write("F1", "Michal Frohlich", center_format)
+    ws.merge_range("D2:G2", "Adresa: 691 62, Uherčice 159", center_format)
+    ws.merge_range("E3:F3", "TEL: 723 891 750", center_format)
+    ws.merge_range("E4:F4", "IČO: 1002249473", center_format)
+
+    ws.merge_range("A5:J5", "", border_up_format)
 
     left_format = wb.add_format()
     left_format.set_align('left')
@@ -58,6 +63,8 @@ def tisk(zakazka):
     ws.write("D6", "Datum: " + zakazka.datum)
     ws.write("A7", "Jméno: " + zakazka.jmeno.get())
     ws.write("D7", "Telefon: " + zakazka.telefon.get())
+
+    ws.merge_range("A8:J8", "", border_up_format)
 
     auto = zakazka.vozidlo
     ws.write("A9", "Vozidlo")
@@ -69,11 +76,13 @@ def tisk(zakazka):
     ws.write("C11", "r.v.: " + auto.rokVyroby.get())
     ws.write("F11", "Tachometr: " + auto.tachometr.get())
 
+    ws.merge_range("A12:J12", "", border_up_format)
+
     # material
     ws.write("A13", "Material")
     ws.write("A14", "Položka")
-    ws.write("D14", "Množství")
-    ws.write("F14", "Cena za jednotku")
+    ws.write("F14", "Množství")
+    ws.write("G14", "Cena za jednotku")
     ws.write("I14", "Cena celkem")
 
     polozky = zakazka.polozky
@@ -81,34 +90,40 @@ def tisk(zakazka):
     for pol in polozky:
         index += 1
         ws.write("A" + str(index), pol.oznaceni.get())
-        ws.write("D" + str(index), pol.mnozstvi.get())
-        ws.write("F" + str(index), pol.cenaZaJednotku.get())
+        ws.write("F" + str(index), pol.mnozstvi.get())
+        ws.write("G" + str(index), pol.cenaZaJednotku.get())
         ws.write("I" + str(index), pol.cenaCelkem.get())
 
     index += 1
     ws.write("G" + str(index), "Celkem za materiál: ")
     ws.write("I" + str(index), zakazka.celkemZaMaterial.get())
 
+    index += 1
+    ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
+
     # práce
-    index += 2
+    index += 1
     ws.write("A" + str(index), "Práce")
     index += 1
     ws.write("A" + str(index), "Položka")
-    ws.write("D" + str(index), "Počet Nh")
-    ws.write("F" + str(index), "Cena za Nh")
+    ws.write("F" + str(index), "Počet Nh")
+    ws.write("G" + str(index), "Cena za Nh")
     ws.write("I" + str(index), "Cena celkem")
 
     prace = zakazka.prace
     for p in prace:
         index += 1
         ws.write("A" + str(index), p.oznaceni.get())
-        ws.write("D" + str(index), p.mnozstvi.get())
-        ws.write("F" + str(index), p.cenaZaJednotku.get())
+        ws.write("F" + str(index), p.mnozstvi.get())
+        ws.write("G" + str(index), p.cenaZaJednotku.get())
         ws.write("I" + str(index), p.cenaCelkem.get())
 
     index += 1
     ws.write("G" + str(index), "Celkem za práci: ")
     ws.write("I" + str(index), zakazka.celkemZaPraci.get())
+
+    index += 1
+    ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
 
     index += 1
     ws.write("G" + str(index), "Celkem: ")
