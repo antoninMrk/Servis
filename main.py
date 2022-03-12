@@ -162,18 +162,25 @@ def refreshMainScreen(zak):
     mainScreen(zak)
 
 
-def searchScreen():
-    Label(searchFrame, text="Hledání").grid(columnspan=10)
+class searchScreen:
 
-    n = StringVar()
-    clientCombo = ttk.Combobox(searchFrame, textvariable=n, justify='center', state="readonly")
-    clientCombo['values'] = ["", "Jméno", "VIN", "SPZ"]
-    clientCombo.grid(row=2, column=0)
+    def __init__(self):
+        self.searchScreen()
 
-    m = StringVar()
-    Entry(searchFrame, textvariable=m, justify='center').grid(row=3, column=0)
-    Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
-        row=4, column=0)
+    def searchScreen(self):
+        self.n = StringVar()
+        self.n.set("SPZ")
+        v = self.n.get()
+        Label(searchFrame, text="Hledání").grid(columnspan=10)
+        clientCombo = ttk.Combobox(searchFrame, textvariable=v, justify='center', state="readonly")
+        clientCombo['values'] = ["SPZ", "Jméno", "VIN", ""]
+        clientCombo.current(0)
+        clientCombo.grid(row=2, column=0)
+
+        m = StringVar()
+        Entry(searchFrame, textvariable=m, justify='center').grid(row=3, column=0)
+        Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
+            row=4, column=0)
 
 
 def mainScreen(zakazky):
