@@ -216,7 +216,7 @@ def mainScreen(zakazky):
             row=cisloRadku, column=7)
         Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
-    Button(mainScreenFrame, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nova Zakázka").grid(row=50,
+    Button(mainScreenFrame, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nová Zakázka").grid(row=50,
                                                                                                              column=0)
     return clients
 
