@@ -93,12 +93,12 @@ def tisk(zakazka):
         index += 1
         ws.write("A" + str(index), pol.oznaceni.get())
         ws.write("F" + str(index), pol.mnozstvi.get())
-        ws.write("G" + str(index), pol.cenaZaJednotku.get())
-        ws.write("I" + str(index), pol.cenaCelkem.get())
+        ws.write("G" + str(index), pol.cenaZaJednotku.get()+" Kč")
+        ws.write("I" + str(index), pol.cenaCelkem.get()+" Kč")
 
     index += 1
     ws.write("G" + str(index), "Celkem za materiál: ")
-    ws.write("I" + str(index), zakazka.celkemZaMaterial.get())
+    ws.write("I" + str(index), zakazka.celkemZaMaterial.get()+" Kč")
 
     index += 1
     ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
@@ -117,19 +117,19 @@ def tisk(zakazka):
         index += 1
         ws.write("A" + str(index), p.oznaceni.get())
         ws.write("F" + str(index), p.mnozstvi.get())
-        ws.write("G" + str(index), p.cenaZaJednotku.get())
-        ws.write("I" + str(index), p.cenaCelkem.get())
+        ws.write("G" + str(index), p.cenaZaJednotku.get()+" Kč")
+        ws.write("I" + str(index), p.cenaCelkem.get()+" Kč")
 
     index += 1
     ws.write("G" + str(index), "Celkem za práci: ")
-    ws.write("I" + str(index), zakazka.celkemZaPraci.get())
+    ws.write("I" + str(index), zakazka.celkemZaPraci.get()+" Kč")
 
     index += 1
     ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
 
     index += 1
     ws.write("G" + str(index), "Celkem: ")
-    ws.write("I" + str(index), zakazka.celkemZaZakazku.get())
+    ws.write("I" + str(index), zakazka.celkemZaZakazku.get()+" Kč")
 
     wb.close()
     cwd = os.getcwd()
