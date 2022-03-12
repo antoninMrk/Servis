@@ -149,7 +149,7 @@ def searchScreen():
     Label(searchFrame, text="Hledání").grid(columnspan=10)
 
     n = StringVar()
-    clientCombo = ttk.Combobox(searchFrame, textvariable=n, justify='center')
+    clientCombo = ttk.Combobox(searchFrame, textvariable=n, justify='center', state="readonly")
     clientCombo.grid(row=2, column=0)
     clientCombo['values'] = ["", "Jméno", "VIN", "SPZ"]
 
@@ -226,6 +226,20 @@ def novaZakazkaScreenInit(opened, edited):
 
 
 def novaZakazkaScreen(z, opened, edited):
+    def findAndSetVehicle(event):
+        zakazkyBySPZ = db.getBySPZ(z.vozidlo.SPZ.get())
+        if zakazkyBySPZ and z.jmeno.get() == "":
+            prvniZakazka = zakazkyBySPZ[0]
+            z.jmeno.set(prvniZakazka.jmeno.get())
+            z.telefon.set(prvniZakazka.telefon.get())
+            z.vozidlo.SPZ.set(prvniZakazka.vozidlo.SPZ.get())
+            z.vozidlo.VIN.set(prvniZakazka.vozidlo.VIN.get())
+            z.vozidlo.znacka.set(prvniZakazka.vozidlo.znacka.get())
+            z.vozidlo.typ.set(prvniZakazka.vozidlo.typ.get())
+            z.vozidlo.motor.set(prvniZakazka.vozidlo.motor.get())
+            z.vozidlo.rokVyroby.set(prvniZakazka.vozidlo.rokVyroby.get())
+            z.vozidlo.tachometr.set(prvniZakazka.vozidlo.tachometr.get())
+
     def pridatPolozku(canvasGroup, item):
         p = polozka.Polozka()
         p.cisloZakazky = z.ID
@@ -325,7 +339,9 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
         Label(zakazkaV, text="SPZ").grid(row=4, column=0)
-        Entry(zakazkaV, textvariable=v.SPZ, justify='center').grid(row=5, column=0)
+        spzEntry = Entry(zakazkaV, textvariable=v.SPZ, justify='center')
+        spzEntry.grid(row=5, column=0)
+        spzEntry.bind("<FocusOut>", findAndSetVehicle)
 
         Label(zakazkaV, text="VIN").grid(row=4, column=1)
         Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)

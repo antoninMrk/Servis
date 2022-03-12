@@ -56,6 +56,7 @@ def convertToZakazky(e):
 
     return zakazky
 
+
 def getVozidloByCisloZakazky(cisloZakazky):
     conn = connector.Connection()
     c = conn.execute("SELECT * FROM vozidlo where cisloZakazky=" + str(cisloZakazky))
