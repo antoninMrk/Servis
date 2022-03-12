@@ -221,7 +221,7 @@ def mainScreen(zakazky):
 
         Button(canvasZ, command=lambda za=zakazka: novaZakazkaScreen(za, opened, edited), text="Upravit").grid(
             row=cisloRadku, column=7)
-        Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
+        # Button(canvasZ, command=lambda za=zakazka: tisk(za), text="Vytisknout").grid(row=cisloRadku, column=8)
 
     Button(mainScreenFrame, command=lambda: novaZakazkaScreenInit(opened, edited), text="Nová Zakázka").grid(row=50,
                                                                                                              column=0)
@@ -443,7 +443,7 @@ def novaZakazkaScreen(z, opened, edited):
         zakazkaK = Frame(novaZakazkaWindow)
         zakazkaK.grid(columnspan=10)
 
-        Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
+        # Button(zakazkaK, command=zavrit, text="Zavřít").grid(row=50, column=0)
         Button(zakazkaK, command=saveNovaZakazka, text="Uložit").grid(row=50, column=50)
         Button(zakazkaK, command=lambda za=z: tisk(za), text="Vytisknout").grid(row=50, column=100)
 
