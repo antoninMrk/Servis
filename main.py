@@ -107,6 +107,7 @@ def tisk(zakazka):
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), pol.cenaCelkem.get() + " Kč")
 
+    index += 1
     ws.write("G" + str(index), "Celkem za materiál: ")
     ws.write("I" + str(index), zakazka.celkemZaMaterial.get() + " Kč")
 
@@ -136,6 +137,7 @@ def tisk(zakazka):
         ws.write("G" + str(index), p.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), p.cenaCelkem.get() + " Kč")
 
+    index += 1
     ws.write("G" + str(index), "Celkem za práci: ")
     ws.write("I" + str(index), zakazka.celkemZaPraci.get() + " Kč")
 
