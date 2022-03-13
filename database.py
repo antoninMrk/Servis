@@ -20,14 +20,14 @@ def getByClient(client):
 
 def getByVIN(VIN):
     conn = connector.Connection()
-    c = conn.execute("select z.* from zakazka z JOIN vozidlo v on v.cisloZakazky = z.id where v.VIN like '%"+VIN+"%' ORDER BY z.id desc limit 10")
+    c = conn.execute("select z.* from zakazka z JOIN vozidlo v on v.cisloZakazky = z.id where v.VIN = '"+VIN+"' ORDER BY z.id desc limit 10")
     e = c.fetchall()
     return convertToZakazky(e)
 
 
 def getBySPZ(SPZ):
     conn = connector.Connection()
-    c = conn.execute("select z.* from zakazka z JOIN vozidlo v on v.cisloZakazky = z.id where v.SPZ like '%"+SPZ+"%' ORDER BY z.id desc limit 10")
+    c = conn.execute("select z.* from zakazka z JOIN vozidlo v on v.cisloZakazky = z.id where v.SPZ = '"+SPZ+"' ORDER BY z.id desc limit 10")
     e = c.fetchall()
     return convertToZakazky(e)
 

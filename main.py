@@ -163,18 +163,20 @@ def tisk(zakazka):
 def search(combobox, searchableEntry):
     searchBy = combobox.get()
     hledanyVyraz = searchableEntry.get()
-
-    if searchBy == "Jméno":
-        zak = db.getByClient(hledanyVyraz)
-        refreshMainScreen(zak)
-    elif searchBy == "VIN":
-        zak = db.getByVIN(hledanyVyraz)
-        refreshMainScreen(zak)
-    elif searchBy == "SPZ":
-        zak = db.getBySPZ(hledanyVyraz)
-        refreshMainScreen(zak)
+    if hledanyVyraz != '':
+        if searchBy == "Jméno":
+            zak = db.getByClient(hledanyVyraz)
+            refreshMainScreen(zak)
+        elif searchBy == "VIN":
+            zak = db.getByVIN(hledanyVyraz)
+            refreshMainScreen(zak)
+        elif searchBy == "SPZ":
+            zak = db.getBySPZ(hledanyVyraz)
+            refreshMainScreen(zak)
+        else:
+            refreshMainScreen(db.get())
     else:
-        refreshMainScreen(zakazkyZDB)
+        refreshMainScreen(db.get())
 
 
 def refreshMainScreen(zak):
