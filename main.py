@@ -4,6 +4,8 @@ import transferObject.Polozka as polozka
 import transferObject.Vozidlo as vozidlo
 from tkinter import *
 from tkinter import messagebox
+from tkinter import font
+import tkinter as tk
 from datetime import date
 import os
 import xlsxwriter
@@ -150,7 +152,7 @@ def tisk(zakazka):
 
     wb.close()
     cwd = os.getcwd()
-    os.startfile(cwd + "/" + fileName, "print")
+    os.system(cwd + "/" + fileName)
 
 
 def search(combobox, searchableEntry):
@@ -347,11 +349,11 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0,
                                                                                                sticky=N)
 
-        textOznaceni = Text(canvasP, width=58, height=1, wrap="word")
+        textOznaceni = Text(canvasP, width=58, wrap="word")
         textOznaceni.grid(row=2, column=1)
         textOznaceni.bind("<KeyRelease>", update_size)
         textOznaceni.bind("<Return>", enter)
-        textOznaceni.configure(font=("Arial", 9))
+        textOznaceni.configure(font=("Arial", 14))
 
         textOznaceni.delete(1.0, END)
         textOznaceni.insert(1.0, p.oznaceni.get())
@@ -397,6 +399,7 @@ def novaZakazkaScreen(z, opened, edited):
         polozky = z.polozky
         prace = z.prace
         novaZakazkaWindow = Toplevel(root)
+        novaZakazkaWindow.state("zoomed")
         novaZakazkaWindow.title("Nová Zakázka")
         novaZakazkaWindow.protocol("WM_DELETE_WINDOW", zavrit)
         novaZakazkaWindow.bind("<Key>", updated)
@@ -463,7 +466,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=10, sticky="e", padx=94)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=272)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
                                                                                                         column=50)
@@ -490,7 +493,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=10, sticky="e", padx=94)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=272)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                                   column=50)
@@ -516,11 +519,21 @@ def novaZakazkaScreen(z, opened, edited):
         Button(zakazkaK, command=lambda za=z: tisk(za), text="Vytisknout").grid(row=50, column=100)
 
 
+def zavritMain():
+    if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít Aplikaci Servis?", parent=root):
+        root.destroy()
+
+
 root = Tk()
 root.title("Servis")
 root.state("zoomed")
+root.option_add("*Font", "arial 14")
+root.protocol("WM_DELETE_WINDOW", zavritMain)
 # root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 # root.attributes("-fullscreen", True)
+# default_font = tk.font.nametofont("TkDefaultFont")
+# size = default_font.cget("size")
+# # default_font.configure(size=max(size+5, 8))
 
 canvas = Frame(root)
 canvas.grid()
