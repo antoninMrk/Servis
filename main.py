@@ -8,6 +8,7 @@ from datetime import date
 import os
 import xlsxwriter
 from tkinter import ttk
+from PIL import ImageFont
 
 
 class Boolean(object):
@@ -89,25 +90,23 @@ def tisk(zakazka):
     ws.write("G14", "Cena za jednotku")
     ws.write("I14", "Cena celkem")
 
+    wrap_format = wb.add_format()
+    wrap_format.set_text_wrap()
+
     polozky = zakazka.polozky
-    index = 15
+    index = 14
     for pol in polozky:
+        index += 1
+        text = pol.oznaceni.get()
+        font1 = ImageFont.truetype('calibri.ttf', 11)
+        size = font1.getsize(text)
+        rowSizeMax = int(size[0]/250)+1
+        ws.set_row(index-1, 15.0000001*rowSizeMax)
+        ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
         ws.write("F" + str(index), pol.mnozstvi.get())
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), pol.cenaCelkem.get() + " Kč")
-        oznaceniMat = pol.oznaceni.get()
-        for oznMat in oznaceniMat.splitlines():
-            if len(oznMat) > 40:
-                number_of_lines = int(len(oznMat)/40)
-                for i in range(number_of_lines+1):
-                    if i == number_of_lines:
-                        ws.write("A" + str(index), oznMat[i*40:len(oznMat)])
-                    else:
-                        ws.write("A" + str(index), oznMat[i*40:i*40+40])
-                    index += 1
-            else:
-                ws.write("A" + str(index), oznMat)
-                index += 1
+
     ws.write("G" + str(index), "Celkem za materiál: ")
     ws.write("I" + str(index), zakazka.celkemZaMaterial.get() + " Kč")
 
@@ -124,25 +123,18 @@ def tisk(zakazka):
     ws.write("I" + str(index), "Cena celkem")
 
     prace = zakazka.prace
-    index += 1
     for p in prace:
+        index += 1
+        text = p.oznaceni.get()
+        font1 = ImageFont.truetype('calibri.ttf', 11)
+        size = font1.getsize(text)
+        rowSizeMax = int(size[0] / 250) + 1
+        ws.set_row(index - 1, 15.0000001 * rowSizeMax)
+        ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
+
         ws.write("F" + str(index), p.mnozstvi.get())
         ws.write("G" + str(index), p.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), p.cenaCelkem.get() + " Kč")
-
-        oznaceniMat = p.oznaceni.get()
-        for oznMat in oznaceniMat.splitlines():
-            if len(oznMat) > 40:
-                number_of_lines = int(len(oznMat) / 40)
-                for i in range(number_of_lines + 1):
-                    if i == number_of_lines:
-                        ws.write("A" + str(index), oznMat[i * 40:len(oznMat)])
-                    else:
-                        ws.write("A" + str(index), oznMat[i * 40:i * 40 + 40])
-                    index += 1
-            else:
-                ws.write("A" + str(index), oznMat)
-                index += 1
 
     ws.write("G" + str(index), "Celkem za práci: ")
     ws.write("I" + str(index), zakazka.celkemZaPraci.get() + " Kč")
