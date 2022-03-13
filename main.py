@@ -178,7 +178,7 @@ class searchScreen:
         clientCombo.grid(row=2, column=0)
 
         m = StringVar()
-        Entry(searchFrame, textvariable=m, justify='center').grid(row=3, column=0)
+        Entry(searchFrame, textvariable=m, justify='center', width=30).grid(row=3, column=0)
         Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
             row=4, column=0)
 
@@ -253,6 +253,20 @@ def novaZakazkaScreen(z, opened, edited):
         zakazkyBySPZ = db.getBySPZ(z.vozidlo.SPZ.get())
         if zakazkyBySPZ and z.jmeno.get() == "":
             prvniZakazka = zakazkyBySPZ[0]
+            z.jmeno.set(prvniZakazka.jmeno.get())
+            z.telefon.set(prvniZakazka.telefon.get())
+            z.vozidlo.SPZ.set(prvniZakazka.vozidlo.SPZ.get())
+            z.vozidlo.VIN.set(prvniZakazka.vozidlo.VIN.get())
+            z.vozidlo.znacka.set(prvniZakazka.vozidlo.znacka.get())
+            z.vozidlo.typ.set(prvniZakazka.vozidlo.typ.get())
+            z.vozidlo.motor.set(prvniZakazka.vozidlo.motor.get())
+            z.vozidlo.rokVyroby.set(prvniZakazka.vozidlo.rokVyroby.get())
+            z.vozidlo.tachometr.set(prvniZakazka.vozidlo.tachometr.get())
+
+    def findAndSetVehicleByVIN(event):
+        zakazkyByVIN = db.getByVIN(z.vozidlo.VIN.get())
+        if zakazkyByVIN and z.jmeno.get() == "":
+            prvniZakazka = zakazkyByVIN[0]
             z.jmeno.set(prvniZakazka.jmeno.get())
             z.telefon.set(prvniZakazka.telefon.get())
             z.vozidlo.SPZ.set(prvniZakazka.vozidlo.SPZ.get())
@@ -354,10 +368,13 @@ def novaZakazkaScreen(z, opened, edited):
         zakazkaV = Frame(novaZakazkaWindow)
         zakazkaV.grid(sticky=W, columnspan=10)
 
-        Label(zakazkaV, text="Jméno").grid(row=0, column=0)
-        Entry(zakazkaV, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
-        Label(zakazkaV, text="Telefon").grid(row=0, column=1)
-        Entry(zakazkaV, textvariable=z.telefon, justify='center').grid(row=1, column=1)
+        headFrame = Frame(zakazkaV)
+        headFrame.grid(columnspan=10, sticky=W)
+
+        Label(headFrame, text="Jméno").grid(row=0, column=0)
+        Entry(headFrame, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
+        Label(headFrame, text="Telefon").grid(row=0, column=1)
+        Entry(headFrame, textvariable=z.telefon, justify='center').grid(row=1, column=1)
 
         Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
 
@@ -368,7 +385,9 @@ def novaZakazkaScreen(z, opened, edited):
         # novaZakazkaWindow.bind("<Key>", findAndSetVehicle)
 
         Label(zakazkaV, text="VIN").grid(row=4, column=1)
-        Entry(zakazkaV, textvariable=v.VIN, justify='center').grid(row=5, column=1)
+        vinEntry = Entry(zakazkaV, textvariable=v.VIN, justify='center', width=30)
+        vinEntry.grid(row=5, column=1)
+        vinEntry.bind("<FocusOut>", findAndSetVehicleByVIN)
 
         Label(zakazkaV, text="značka").grid(row=4, column=2)
         Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
@@ -396,7 +415,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=10, sticky="e", padx=140)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=200)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1, column=50)
 
@@ -422,7 +441,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=10, sticky="e", padx=140)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=200)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                              column=50)
