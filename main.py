@@ -92,7 +92,6 @@ def tisk(zakazka):
     polozky = zakazka.polozky
     index = 15
     for pol in polozky:
-        print("print polozku")
         ws.write("F" + str(index), pol.mnozstvi.get())
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), pol.cenaCelkem.get() + " Kč")
@@ -204,7 +203,9 @@ class searchScreen:
         clientCombo.grid(row=2, column=0)
 
         m = StringVar()
-        Entry(searchFrame, textvariable=m, justify='center', width=30).grid(row=3, column=0)
+        searchEntry = Entry(searchFrame, textvariable=m, justify='center', width=30)
+        searchEntry.grid(row=3, column=0)
+        searchEntry.bind("<Return>", lambda x: search(clientCombo, m))
         Button(searchFrame, command=lambda: search(clientCombo, m), text="Hledat").grid(
             row=4, column=0)
 
