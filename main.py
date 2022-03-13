@@ -36,6 +36,8 @@ def refresh(opened):
 
 
 def tisk(zakazka):
+    if not os.path.exists('zakazky'):
+        os.makedirs('zakazky')
     fileName = "zakazky/workbook" + str(zakazka.ID) + ".xlsx"
     wb = xlsxwriter.Workbook(fileName)
     ws = wb.add_worksheet("worksheet1")
