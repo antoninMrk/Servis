@@ -47,7 +47,7 @@ def tisk(zakazka):
     # A-J
     # 1-48 včetně
     # hlavička
-    ws.merge_range("E1:F1","Michal Frohlich", center_format)
+    ws.merge_range("E1:F1", "Michal Frohlich", center_format)
     # ws.write("F1", "Michal Frohlich", center_format)
     ws.merge_range("D2:G2", "Adresa: 691 62, Uherčice 159", center_format)
     ws.merge_range("E3:F3", "TEL: 723 891 750", center_format)
@@ -93,15 +93,15 @@ def tisk(zakazka):
         index += 1
         ws.write("A" + str(index), pol.oznaceni.get())
         ws.write("F" + str(index), pol.mnozstvi.get())
-        ws.write("G" + str(index), pol.cenaZaJednotku.get()+" Kč")
-        ws.write("I" + str(index), pol.cenaCelkem.get()+" Kč")
+        ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
+        ws.write("I" + str(index), pol.cenaCelkem.get() + " Kč")
 
     index += 1
     ws.write("G" + str(index), "Celkem za materiál: ")
-    ws.write("I" + str(index), zakazka.celkemZaMaterial.get()+" Kč")
+    ws.write("I" + str(index), zakazka.celkemZaMaterial.get() + " Kč")
 
     index += 1
-    ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
+    ws.merge_range("A" + str(index) + ":J" + str(index), "", border_up_format)
 
     # práce
     index += 1
@@ -117,19 +117,19 @@ def tisk(zakazka):
         index += 1
         ws.write("A" + str(index), p.oznaceni.get())
         ws.write("F" + str(index), p.mnozstvi.get())
-        ws.write("G" + str(index), p.cenaZaJednotku.get()+" Kč")
-        ws.write("I" + str(index), p.cenaCelkem.get()+" Kč")
+        ws.write("G" + str(index), p.cenaZaJednotku.get() + " Kč")
+        ws.write("I" + str(index), p.cenaCelkem.get() + " Kč")
 
     index += 1
     ws.write("G" + str(index), "Celkem za práci: ")
-    ws.write("I" + str(index), zakazka.celkemZaPraci.get()+" Kč")
+    ws.write("I" + str(index), zakazka.celkemZaPraci.get() + " Kč")
 
     index += 1
-    ws.merge_range("A"+str(index)+":J"+str(index), "", border_up_format)
+    ws.merge_range("A" + str(index) + ":J" + str(index), "", border_up_format)
 
     index += 1
     ws.write("G" + str(index), "Celkem: ")
-    ws.write("I" + str(index), zakazka.celkemZaZakazku.get()+" Kč")
+    ws.write("I" + str(index), zakazka.celkemZaZakazku.get() + " Kč")
 
     wb.close()
     cwd = os.getcwd()
@@ -200,7 +200,7 @@ def mainScreen(zakazky):
     Label(canvasZ, text="Datum").grid(row=0, column=6)
 
     separator = ttk.Separator(canvasZ, orient="horizontal")
-    separator.grid(row=1, sticky=E+W, columnspan=10)
+    separator.grid(row=1, sticky=E + W, columnspan=10)
     clients = []
     cisloRadku = 1
     for zakazka in zakazky:
@@ -288,9 +288,28 @@ def novaZakazkaScreen(z, opened, edited):
         showPolozku(p, canvasGroup)
 
     def showPolozku(p, canvasGroup):
+        def enter(event):
+            widget_height = (event.widget.winfo_height() - 4) / 16
+            event.widget.config(height=widget_height + 1)
+
+        def update_size(event):
+            update_size_widget(event.widget)
+
+        def update_size_widget(widget):
+            text = widget.get("1.0", END)
+            linesText = text.split("\n")
+            p.oznaceni.set(text[:text.rfind('\n')])
+
+            lines = len(linesText) - 1
+            for line in linesText:
+                if len(line) > 49:
+                    lines += int(len(line) / 50)
+            widget.config(height=lines)
+
         def calculate(var, index, mode):
             if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
-                p.cenaCelkem.set(float(p.mnozstvi.get().replace(",", ".")) * float(p.cenaZaJednotku.get().replace(",", ".")))
+                p.cenaCelkem.set(
+                    float(p.mnozstvi.get().replace(",", ".")) * float(p.cenaZaJednotku.get().replace(",", ".")))
                 cenaZaMaterial = 0
                 for poloz in z.polozky:
                     if poloz.cenaCelkem.get() != '':
@@ -309,11 +328,18 @@ def novaZakazkaScreen(z, opened, edited):
         canvasP = Frame(canvasGroup)
         canvasP.grid(columnspan=10, sticky=W)
 
-        Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0)
-        Entry(canvasP, textvariable=p.oznaceni, justify='center', width=50).grid(row=2, column=1)
-        Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2)
-        Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3)
-        Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4)
+        Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0,
+                                                                                               sticky=N)
+
+        textOznaceni = Text(canvasP, width=50, height=1)
+        textOznaceni.grid(row=2, column=1)
+        textOznaceni.insert(1.0, p.oznaceni.get())
+        textOznaceni.bind("<KeyRelease>", update_size)
+        textOznaceni.bind("<Return>", enter)
+        update_size_widget(textOznaceni)
+        Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2, sticky=N)
+        Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3, sticky=N)
+        Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4, sticky=N)
         p.mnozstvi.trace("w", calculate)
         p.cenaZaJednotku.trace("w", calculate)
 
@@ -419,7 +445,8 @@ def novaZakazkaScreen(z, opened, edited):
         canvasMaterial = Frame(novaZakazkaWindow)
         canvasMaterial.grid(columnspan=10, sticky="e", padx=200)
 
-        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1, column=50)
+        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
+                                                                                                        column=50)
 
         hasPolozku = False
         for pol in z.polozky:
@@ -446,7 +473,7 @@ def novaZakazkaScreen(z, opened, edited):
         canvasPrace.grid(columnspan=10, sticky="e", padx=200)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
-                                                                                                             column=50)
+                                                                                                                  column=50)
         hasPraci = False
 
         for prac in prace:
