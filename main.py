@@ -322,15 +322,10 @@ def novaZakazkaScreen(z, opened, edited):
             update_size_widget(event.widget)
 
         def update_size_widget(widget):
+            height = widget.tk.call((widget, "count", "-update", "-displaylines", "1.0", "end"))
+            widget.configure(height=height)
             text = widget.get("1.0", END)
-            linesText = text.split("\n")
             p.oznaceni.set(text[:text.rfind('\n')])
-
-            lines = len(linesText) - 1
-            for line in linesText:
-                if len(line) > 49:
-                    lines += int(len(line) / 50)
-            widget.config(height=lines)
 
         def calculate(var, index, mode):
             if p.mnozstvi.get() != '' and p.cenaZaJednotku.get() != '':
@@ -357,12 +352,16 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0,
                                                                                                sticky=N)
 
-        textOznaceni = Text(canvasP, width=50, height=1)
+        textOznaceni = Text(canvasP, width=50, height=1, wrap="word")
         textOznaceni.grid(row=2, column=1)
-        textOznaceni.insert(1.0, p.oznaceni.get())
         textOznaceni.bind("<KeyRelease>", update_size)
         textOznaceni.bind("<Return>", enter)
-        update_size_widget(textOznaceni)
+        textOznaceni.configure(font=("Arial", 9))
+
+        textOznaceni.delete(1.0, END)
+        textOznaceni.insert(1.0, p.oznaceni.get())
+        textOznaceni.after(10, lambda: update_size_widget(textOznaceni))
+
         Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2, sticky=N)
         Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3, sticky=N)
         Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4, sticky=N)
