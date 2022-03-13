@@ -152,7 +152,7 @@ def tisk(zakazka):
 
     wb.close()
     cwd = os.getcwd()
-    os.system(cwd + "/" + fileName)
+    os.startfile(cwd + "/" + fileName)
 
 
 def search(combobox, searchableEntry):
