@@ -459,13 +459,13 @@ def novaZakazkaScreen(z, opened, edited):
 
         Label(zakazkaP, text="Materiál").grid(row=0, column=0)
         Label(zakazkaP, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaP, text="Označení položky", width=42).grid(row=1, column=1)
+        Label(zakazkaP, text="Označení položky", width=57).grid(row=1, column=1)
         Label(zakazkaP, text="Množství", width=15).grid(row=1, column=2)
         Label(zakazkaP, text="Cena za jednotku", width=20).grid(row=1, column=3)
         Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=10, sticky="e", padx=200)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=100)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
                                                                                                         column=50)
@@ -486,13 +486,13 @@ def novaZakazkaScreen(z, opened, edited):
 
         Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
         Label(zakazkaPrace, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaPrace, text="Označení práce", width=42).grid(row=1, column=1)
+        Label(zakazkaPrace, text="Označení práce", width=57).grid(row=1, column=1)
         Label(zakazkaPrace, text="Počet Nh", width=15).grid(row=1, column=2)
         Label(zakazkaPrace, text="Cena za Nh", width=20).grid(row=1, column=3)
         Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=10, sticky="e", padx=200)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=100)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                                   column=50)
