@@ -347,7 +347,7 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasP, textvariable=p.cislo, state='disabled', justify='center', width=8).grid(row=2, column=0,
                                                                                                sticky=N)
 
-        textOznaceni = Text(canvasP, width=50, height=1, wrap="word")
+        textOznaceni = Text(canvasP, width=58, height=1, wrap="word")
         textOznaceni.grid(row=2, column=1)
         textOznaceni.bind("<KeyRelease>", update_size)
         textOznaceni.bind("<Return>", enter)
@@ -463,7 +463,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=10, sticky="e", padx=100)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=94)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
                                                                                                         column=50)
@@ -490,7 +490,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=10, sticky="e", padx=100)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=94)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                                   column=50)
