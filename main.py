@@ -199,8 +199,10 @@ def mainScreen(zakazky):
     Label(canvasZ, text="Typ").grid(row=0, column=5)
     Label(canvasZ, text="Datum").grid(row=0, column=6)
 
+    separator = ttk.Separator(canvasZ, orient="horizontal")
+    separator.grid(row=1, sticky=E+W, columnspan=10)
     clients = []
-    cisloRadku = 0
+    cisloRadku = 1
     for zakazka in zakazky:
         cisloZakazky = zakazka.ID
         cisloRadku += 1
