@@ -353,11 +353,11 @@ def novaZakazkaScreen(z, opened, edited):
         textOznaceni.grid(row=2, column=1)
         textOznaceni.bind("<KeyRelease>", update_size)
         textOznaceni.bind("<Return>", enter)
-        textOznaceni.configure(font=("Arial", 14))
+        textOznaceni.configure(font=("Arial", 13))
 
         textOznaceni.delete(1.0, END)
         textOznaceni.insert(1.0, p.oznaceni.get())
-        textOznaceni.after(10, lambda: update_size_widget(textOznaceni))
+        textOznaceni.after(100, lambda: update_size_widget(textOznaceni))
 
         Entry(canvasP, textvariable=p.mnozstvi, justify='center').grid(row=2, column=2, sticky=N)
         Entry(canvasP, textvariable=p.cenaZaJednotku, justify='center').grid(row=2, column=3, sticky=N)
@@ -466,7 +466,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
-        canvasMaterial.grid(columnspan=10, sticky="e", padx=272)
+        canvasMaterial.grid(columnspan=10, sticky="e", padx=224)
 
         Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
                                                                                                         column=50)
@@ -493,7 +493,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
-        canvasPrace.grid(columnspan=10, sticky="e", padx=272)
+        canvasPrace.grid(columnspan=10, sticky="e", padx=224)
 
         Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
                                                                                                                   column=50)
@@ -527,7 +527,7 @@ def zavritMain():
 root = Tk()
 root.title("Servis")
 root.state("zoomed")
-root.option_add("*Font", "arial 14")
+root.option_add("*Font", "arial 13")
 root.protocol("WM_DELETE_WINDOW", zavritMain)
 # root.geometry("{0}x{1}+0+0".format(root.winfo_screenwidth(), root.winfo_screenheight()))
 # root.attributes("-fullscreen", True)
