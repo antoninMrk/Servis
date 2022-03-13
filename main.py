@@ -88,15 +88,25 @@ def tisk(zakazka):
     ws.write("I14", "Cena celkem")
 
     polozky = zakazka.polozky
-    index = 14
+    index = 15
     for pol in polozky:
-        index += 1
-        ws.write("A" + str(index), pol.oznaceni.get())
+        print("print polozku")
         ws.write("F" + str(index), pol.mnozstvi.get())
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), pol.cenaCelkem.get() + " Kč")
-
-    index += 1
+        oznaceniMat = pol.oznaceni.get()
+        for oznMat in oznaceniMat.splitlines():
+            if len(oznMat) > 40:
+                number_of_lines = int(len(oznMat)/40)
+                for i in range(number_of_lines+1):
+                    if i == number_of_lines:
+                        ws.write("A" + str(index), oznMat[i*40:len(oznMat)])
+                    else:
+                        ws.write("A" + str(index), oznMat[i*40:i*40+40])
+                    index += 1
+            else:
+                ws.write("A" + str(index), oznMat)
+                index += 1
     ws.write("G" + str(index), "Celkem za materiál: ")
     ws.write("I" + str(index), zakazka.celkemZaMaterial.get() + " Kč")
 
@@ -113,14 +123,26 @@ def tisk(zakazka):
     ws.write("I" + str(index), "Cena celkem")
 
     prace = zakazka.prace
+    index += 1
     for p in prace:
-        index += 1
-        ws.write("A" + str(index), p.oznaceni.get())
         ws.write("F" + str(index), p.mnozstvi.get())
         ws.write("G" + str(index), p.cenaZaJednotku.get() + " Kč")
         ws.write("I" + str(index), p.cenaCelkem.get() + " Kč")
 
-    index += 1
+        oznaceniMat = p.oznaceni.get()
+        for oznMat in oznaceniMat.splitlines():
+            if len(oznMat) > 40:
+                number_of_lines = int(len(oznMat) / 40)
+                for i in range(number_of_lines + 1):
+                    if i == number_of_lines:
+                        ws.write("A" + str(index), oznMat[i * 40:len(oznMat)])
+                    else:
+                        ws.write("A" + str(index), oznMat[i * 40:i * 40 + 40])
+                    index += 1
+            else:
+                ws.write("A" + str(index), oznMat)
+                index += 1
+
     ws.write("G" + str(index), "Celkem za práci: ")
     ws.write("I" + str(index), zakazka.celkemZaPraci.get() + " Kč")
 
