@@ -52,51 +52,52 @@ def tisk(zakazka):
     # A-J
     # 1-48 včetně
     # hlavička
-    ws.merge_range("E1:F1", "Michal Frohlich", center_format)
+    ws.merge_range("E1:F1", "AUTOSERVIS", center_format)
+    ws.merge_range("E2:F2", "Michal Frohlich", center_format)
     # ws.write("F1", "Michal Frohlich", center_format)
-    ws.merge_range("D2:G2", "Adresa: 691 62, Uherčice 159", center_format)
-    ws.merge_range("E3:F3", "TEL: 723 891 750", center_format)
-    ws.merge_range("E4:F4", "IČO: 1002249473", center_format)
+    ws.merge_range("D3:G3", "Adresa: 691 62, Uherčice 159", center_format)
+    ws.merge_range("E4:F4", "TEL: 723 891 750", center_format)
+    ws.merge_range("E5:F5", "IČO: 74616862", center_format)
 
-    ws.merge_range("A5:J5", "", border_up_format)
+    ws.merge_range("A6:J6", "", border_up_format)
 
     left_format = wb.add_format()
     left_format.set_align('left')
     ws.set_column('A:XFD', None, left_format)
 
-    ws.write("A6", "Zakázka: " + str(zakazka.ID))
+    ws.write("A7", "Zakázka: " + str(zakazka.ID))
     datumSplit = zakazka.datum.split('-')
     datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
-    ws.write("D6", "Datum: " + datum)
-    ws.write("A7", "Jméno: " + zakazka.jmeno.get())
-    ws.write("D7", "Telefon: " + zakazka.telefon.get())
+    ws.write("D7", "Datum: " + datum)
+    ws.write("A8", "Jméno: " + zakazka.jmeno.get())
+    ws.write("D8", "Telefon: " + zakazka.telefon.get())
 
-    ws.merge_range("A8:J8", "", border_up_format)
+    ws.merge_range("A9:J9", "", border_up_format)
 
     auto = zakazka.vozidlo
-    ws.write("A9", "Vozidlo")
-    ws.write("A10", "SPZ: " + auto.SPZ.get())
-    ws.write("C10", "VIN: " + auto.VIN.get())
-    ws.write("F10", "Značka: " + auto.znacka.get())
-    ws.write("I10", "Model: " + auto.typ.get())
-    ws.write("A11", "Motor: " + auto.motor.get())
-    ws.write("C11", "r.v.: " + auto.rokVyroby.get())
-    ws.write("F11", "Tachometr: " + auto.tachometr.get())
+    ws.write("A10", "Vozidlo")
+    ws.write("A11", "SPZ: " + auto.SPZ.get())
+    ws.write("C11", "VIN: " + auto.VIN.get())
+    ws.write("F11", "Značka: " + auto.znacka.get())
+    ws.write("I11", "Model: " + auto.typ.get())
+    ws.write("A12", "Motor: " + auto.motor.get())
+    ws.write("C12", "r.v.: " + auto.rokVyroby.get())
+    ws.write("F12", "Tachometr: " + auto.tachometr.get())
 
-    ws.merge_range("A12:J12", "", border_up_format)
+    ws.merge_range("A13:J13", "", border_up_format)
 
     # material
-    ws.write("A13", "Material")
-    ws.write("A14", "Položka")
-    ws.write("F14", "Množství")
-    ws.write("G14", "Cena za jednotku")
-    ws.write("I14", "Cena celkem")
+    ws.write("A14", "Material")
+    ws.write("A15", "Položka")
+    ws.write("F15", "Množství")
+    ws.write("G15", "Cena za jednotku")
+    ws.write("I15", "Cena celkem")
 
     wrap_format = wb.add_format()
     wrap_format.set_text_wrap()
 
     polozky = zakazka.polozky
-    index = 14
+    index = 15
     for pol in polozky:
         index += 1
         text = pol.oznaceni.get()
