@@ -132,8 +132,13 @@ def tisk(zakazka):
         text = p.oznaceni.get()
         font1 = ImageFont.truetype('calibri.ttf', 11)
         size = font1.getsize(text)
-        rowSizeMax = int(size[0] / 250) + 1
-        ws.set_row(index - 1, 15.0000001 * rowSizeMax)
+        lines = text.splitlines()
+        rowSizeMax = 0
+        for line in lines:
+            size = font1.getsize(line)
+            rowSizeMax += int(size[0] / 250)
+        numberOfLines = rowSizeMax + len(lines)
+        ws.set_row(index - 1, 14.000001 * numberOfLines)
         ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
 
         ws.write("F" + str(index), p.mnozstvi.get())
