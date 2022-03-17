@@ -376,34 +376,52 @@ def novaZakazkaScreen(z, opened, edited):
         for item in prace:
             db.savePolozku(item, "prace")
 
-        novaZakazkaWindow.destroy()
+        container.destroy()
         refresh(opened)
 
     def zavrit():
         destroy = True
         if edited.val:
             if messagebox.askokcancel("Zavřít", "Opravdu chceš zavřít zakázku?\nZměny nebudou uloženy!",
-                                      parent=novaZakazkaWindow):
+                                      parent=container):
                 destroy = True
             else:
                 destroy = False
         if destroy:
-            novaZakazkaWindow.destroy()
+            container.destroy()
             refresh(opened)
 
     def updated(self):
         edited.val = True
+
+    def windowUpdated(self):
+        canvasToScroll.configure(scrollregion=canvasToScroll.bbox("all"))
+
+    def OnMouseWheel(event):
+        canvasToScroll.yview_scroll(int(-1*(event.delta/120)), "units")
 
     if opened.val:
         opened.val = False
         v = z.vozidlo
         polozky = z.polozky
         prace = z.prace
-        novaZakazkaWindow = Toplevel(root)
-        novaZakazkaWindow.state("zoomed")
-        novaZakazkaWindow.title("Nová Zakázka")
-        novaZakazkaWindow.protocol("WM_DELETE_WINDOW", zavrit)
-        novaZakazkaWindow.bind("<Key>", updated)
+        container = Toplevel(root)
+        container.state("zoomed")
+        container.title("Nová Zakázka")
+        container.protocol("WM_DELETE_WINDOW", zavrit)
+        container.bind("<Key>", updated)
+        container.bind("<MouseWheel>", OnMouseWheel)
+
+        canvasToScroll = tk.Canvas(container)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvasToScroll.yview)
+        novaZakazkaWindow = ttk.Frame(canvasToScroll)
+
+        novaZakazkaWindow.bind("<Configure>", windowUpdated)
+        canvasToScroll.create_window((0, 0), window=novaZakazkaWindow, anchor="nw")
+        canvasToScroll.configure(yscrollcommand=scrollbar.set)
+
+        canvasToScroll.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
 
         zakazkaC = Frame(novaZakazkaWindow)
         zakazkaC.grid(sticky=W, columnspan=10)
