@@ -65,7 +65,7 @@ def tisk(zakazka):
     left_format.set_align('left')
     ws.set_column('A:XFD', None, left_format)
 
-    ws.write("A7", "Zakázka: " + str(zakazka.ID))
+    ws.write("A7", "Zakázka: " + str(zakazka.cisloZakazky.get()))
     datumSplit = zakazka.datum.split('-')
     datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
     ws.write("D7", "Datum: " + datum)
@@ -110,7 +110,7 @@ def tisk(zakazka):
             rowSizeMax += int(size[0] / 224) + 1
             print(size[0])
         numberOfLines = rowSizeMax
-        ws.set_row(index - 1, 14.000001 * numberOfLines)
+        ws.set_row(index - 1, 14.500001 * numberOfLines)
         ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
         ws.write("F" + str(index), pol.mnozstvi.get())
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
@@ -145,7 +145,7 @@ def tisk(zakazka):
             rowSizeMax += int(size[0] / 224) + 1
             print(size[0])
         numberOfLines = rowSizeMax
-        ws.set_row(index - 1, 14.000001 * numberOfLines)
+        ws.set_row(index - 1, 14.500001 * numberOfLines)
         ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
 
         ws.write("F" + str(index), p.mnozstvi.get())
