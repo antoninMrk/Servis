@@ -103,8 +103,14 @@ def tisk(zakazka):
         text = pol.oznaceni.get()
         font1 = ImageFont.truetype('calibri.ttf', 11)
         size = font1.getsize(text)
-        rowSizeMax = int(size[0]/250)+1
-        ws.set_row(index-1, 15.0000001*rowSizeMax)
+        lines = text.splitlines()
+        rowSizeMax = 0
+        for line in lines:
+            size = font1.getsize(line)
+            rowSizeMax += int(size[0] / 224) + 1
+            print(size[0])
+        numberOfLines = rowSizeMax
+        ws.set_row(index - 1, 14.000001 * numberOfLines)
         ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
         ws.write("F" + str(index), pol.mnozstvi.get())
         ws.write("G" + str(index), pol.cenaZaJednotku.get() + " Kč")
@@ -136,8 +142,9 @@ def tisk(zakazka):
         rowSizeMax = 0
         for line in lines:
             size = font1.getsize(line)
-            rowSizeMax += int(size[0] / 250)
-        numberOfLines = rowSizeMax + len(lines)
+            rowSizeMax += int(size[0] / 224) + 1
+            print(size[0])
+        numberOfLines = rowSizeMax
         ws.set_row(index - 1, 14.000001 * numberOfLines)
         ws.merge_range("A" + str(index) + ":E" + str(index), text, wrap_format)
 
@@ -428,71 +435,74 @@ def novaZakazkaScreen(z, opened, edited):
         canvasToScroll.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
 
-        zakazkaC = Frame(novaZakazkaWindow)
-        zakazkaC.grid(sticky=W, columnspan=10)
-
-        Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
-
-        Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
-        Entry(zakazkaC, textvariable=z.cisloZakazky).grid(row=1, column=1)
-        Label(zakazkaC, text="Datum").grid(row=1, column=2)
-        datumSplit = z.datum.split('-')
-        datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
-        Label(zakazkaC, text=datum).grid(row=1, column=3)
-
         zakazkaV = Frame(novaZakazkaWindow)
         zakazkaV.grid(sticky=W, columnspan=10)
 
         headFrame = Frame(zakazkaV)
-        headFrame.grid(columnspan=10, sticky=W)
+        headFrame.grid(row=0, columnspan=10, sticky=W)
 
-        Label(headFrame, text="Jméno").grid(row=0, column=0)
-        Entry(headFrame, textvariable=z.jmeno, justify='center').grid(row=1, column=0)
-        Label(headFrame, text="Telefon").grid(row=0, column=1)
-        Entry(headFrame, textvariable=z.telefon, justify='center').grid(row=1, column=1)
+        Label(headFrame, text="Zakázka").grid(row=0, column=0)
+        separator = ttk.Separator(headFrame, orient="horizontal")
+        separator.grid(row=1, sticky=E + W, columnspan=10)
+        Label(headFrame, text="Číslo zakázky").grid(row=2, column=0)
+        Entry(headFrame, textvariable=z.cisloZakazky, justify="center").grid(row=3, column=0)
+        Label(headFrame, text="Datum").grid(row=2, column=1)
+        datumSplit = z.datum.split('-')
+        datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
+        Label(headFrame, text=datum).grid(row=3, column=1)
 
+        Label(headFrame, text="Jméno").grid(row=4, column=0)
+        Entry(headFrame, textvariable=z.jmeno, justify='center').grid(row=5, column=0)
+        Label(headFrame, text="Telefon").grid(row=4, column=1)
+        Entry(headFrame, textvariable=z.telefon, justify='center').grid(row=5, column=1)
+
+        tk.Label(zakazkaV, text='     ').grid(column=0, row=1)
         Label(zakazkaV, text="Vozidlo").grid(row=3, column=0)
+        ttk.Separator(zakazkaV, orient="horizontal").grid(row=4, sticky=E + W, columnspan=10)
 
-        Label(zakazkaV, text="SPZ").grid(row=4, column=0)
+        Label(zakazkaV, text="SPZ").grid(row=5, column=0)
         spzEntry = Entry(zakazkaV, textvariable=v.SPZ, justify='center')
-        spzEntry.grid(row=5, column=0)
+        spzEntry.grid(row=6, column=0)
         spzEntry.bind("<FocusOut>", findAndSetVehicle)
         # novaZakazkaWindow.bind("<Key>", findAndSetVehicle)
 
-        Label(zakazkaV, text="VIN").grid(row=4, column=1)
+        Label(zakazkaV, text="VIN").grid(row=5, column=1)
         vinEntry = Entry(zakazkaV, textvariable=v.VIN, justify='center', width=30)
-        vinEntry.grid(row=5, column=1)
+        vinEntry.grid(row=6, column=1)
         vinEntry.bind("<FocusOut>", findAndSetVehicleByVIN)
 
-        Label(zakazkaV, text="značka").grid(row=4, column=2)
-        Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=5, column=2)
+        Label(zakazkaV, text="značka").grid(row=5, column=2)
+        Entry(zakazkaV, textvariable=v.znacka, justify='center').grid(row=6, column=2)
 
-        Label(zakazkaV, text="model").grid(row=4, column=3)
-        Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=5, column=3)
+        Label(zakazkaV, text="model").grid(row=5, column=3)
+        Entry(zakazkaV, textvariable=v.typ, justify='center').grid(row=6, column=3)
 
-        Label(zakazkaV, text="motor").grid(row=4, column=4)
-        Entry(zakazkaV, textvariable=v.motor, justify='center').grid(row=5, column=4)
+        Label(zakazkaV, text="motor").grid(row=5, column=4)
+        Entry(zakazkaV, textvariable=v.motor, justify='center').grid(row=6, column=4)
 
-        Label(zakazkaV, text="rok výroby").grid(row=4, column=5)
-        Entry(zakazkaV, textvariable=v.rokVyroby, justify='center').grid(row=5, column=5)
+        Label(zakazkaV, text="rok výroby").grid(row=5, column=5)
+        Entry(zakazkaV, textvariable=v.rokVyroby, justify='center').grid(row=6, column=5)
 
-        Label(zakazkaV, text="tachometr").grid(row=4, column=6)
-        Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=5, column=6)
+        Label(zakazkaV, text="tachometr").grid(row=5, column=6)
+        Entry(zakazkaV, textvariable=v.tachometr, justify='center').grid(row=6, column=6)
 
         zakazkaP = Frame(novaZakazkaWindow)
         zakazkaP.grid(sticky=W, columnspan=10)
 
-        Label(zakazkaP, text="Materiál").grid(row=0, column=0)
-        Label(zakazkaP, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaP, text="Označení položky", width=57).grid(row=1, column=1)
-        Label(zakazkaP, text="Množství", width=15).grid(row=1, column=2)
-        Label(zakazkaP, text="Cena za jednotku", width=20).grid(row=1, column=3)
-        Label(zakazkaP, text="Cena celkem", width=15).grid(row=1, column=4)
+        tk.Label(zakazkaP, text='     ').grid(row=0, column=0)
+        Label(zakazkaP, text="Materiál").grid(row=1, column=0)
+        ttk.Separator(zakazkaP, orient="horizontal").grid(row=2, sticky=E + W, columnspan=10)
+
+        Label(zakazkaP, text="č. položky").grid(row=3, column=0)
+        Label(zakazkaP, text="Označení položky", width=57).grid(row=3, column=1)
+        Label(zakazkaP, text="Množství", width=15).grid(row=3, column=2)
+        Label(zakazkaP, text="Cena za jednotku", width=20).grid(row=3, column=3)
+        Label(zakazkaP, text="Cena celkem", width=15).grid(row=3, column=4)
 
         canvasMaterial = Frame(novaZakazkaWindow)
         canvasMaterial.grid(columnspan=10, sticky="e", padx=224)
 
-        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=1,
+        Button(zakazkaP, command=lambda: pridatPolozku(zakazkaP, polozky), text="Přidat Material").grid(row=3,
                                                                                                         column=50)
 
         hasPolozku = False
@@ -509,17 +519,19 @@ def novaZakazkaScreen(z, opened, edited):
         zakazkaPrace = Frame(novaZakazkaWindow)
         zakazkaPrace.grid(sticky=W, columnspan=10)
 
-        Label(zakazkaPrace, text="Práce").grid(row=0, column=0)
-        Label(zakazkaPrace, text="č. položky").grid(row=1, column=0)
-        Label(zakazkaPrace, text="Označení práce", width=57).grid(row=1, column=1)
-        Label(zakazkaPrace, text="Počet Nh", width=15).grid(row=1, column=2)
-        Label(zakazkaPrace, text="Cena za Nh", width=20).grid(row=1, column=3)
-        Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=1, column=4)
+        Label(zakazkaPrace, text='     ').grid(row=0, column=0)
+        Label(zakazkaPrace, text="Práce").grid(row=1, column=0)
+        ttk.Separator(zakazkaPrace, orient="horizontal").grid(row=2, sticky=E + W, columnspan=10)
+        Label(zakazkaPrace, text="č. položky").grid(row=3, column=0)
+        Label(zakazkaPrace, text="Označení práce", width=57).grid(row=3, column=1)
+        Label(zakazkaPrace, text="Počet Nh", width=15).grid(row=3, column=2)
+        Label(zakazkaPrace, text="Cena za Nh", width=20).grid(row=3, column=3)
+        Label(zakazkaPrace, text="Cena celkem", width=15).grid(row=3, column=4)
 
         canvasPrace = Frame(novaZakazkaWindow)
         canvasPrace.grid(columnspan=10, sticky="e", padx=224)
 
-        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=1,
+        Button(zakazkaPrace, command=lambda: pridatPolozku(zakazkaPrace, prace), text="   Přidat Práci    ").grid(row=3,
                                                                                                                   column=50)
         hasPraci = False
 
