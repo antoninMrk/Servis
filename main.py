@@ -105,6 +105,8 @@ def tisk(zakazka):
         size = font1.getsize(text)
         lines = text.splitlines()
         rowSizeMax = 0
+        if text == "":
+            rowSizeMax = 1
         for line in lines:
             size = font1.getsize(line)
             rowSizeMax += int(size[0] / 224) + 1
@@ -140,6 +142,8 @@ def tisk(zakazka):
         size = font1.getsize(text)
         lines = text.splitlines()
         rowSizeMax = 0
+        if text == "":
+            rowSizeMax = 1
         for line in lines:
             size = font1.getsize(line)
             rowSizeMax += int(size[0] / 224) + 1
