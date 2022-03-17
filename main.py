@@ -319,15 +319,39 @@ def novaZakazkaScreen(z, opened, edited):
             z.vozidlo.rokVyroby.set(prvniZakazka.vozidlo.rokVyroby.get())
             z.vozidlo.tachometr.set(prvniZakazka.vozidlo.tachometr.get())
 
+    def odstranitPolozku(polo, can, poly):
+        if messagebox.askokcancel("Vymazat", "Opravdu chcete vymazat?", parent=container):
+            can.destroy()
+            poly.remove(polo)
+            ind = 1
+            for po in poly:
+                po.cislo.set(ind)
+                ind += 1
+
+            cenaZaMaterial = 0
+            for poloz in z.polozky:
+                if poloz.cenaCelkem.get() != '':
+                    cenaZaMaterial += float(poloz.cenaCelkem.get())
+
+            z.celkemZaMaterial.set(str(cenaZaMaterial))
+
+            cenaZaPraci = 0
+            for pra in z.prace:
+                if pra.cenaCelkem.get() != '':
+                    cenaZaPraci += float(pra.cenaCelkem.get())
+
+            z.celkemZaPraci.set(str(cenaZaPraci))
+            z.celkemZaZakazku.set(str(float(cenaZaMaterial) + float(cenaZaPraci)))
+
     def pridatPolozku(canvasGroup, item):
         p = polozka.Polozka()
         p.cisloZakazky = z.ID
 
         item.append(p)
         p.cislo.set(len(item))
-        showPolozku(p, canvasGroup)
+        showPolozku(p, canvasGroup, item)
 
-    def showPolozku(p, canvasGroup):
+    def showPolozku(p, canvasGroup, item):
         def enter(event):
             widget_height = (event.widget.winfo_height() - 4) / 16
             event.widget.config(height=widget_height + 1)
@@ -372,7 +396,7 @@ def novaZakazkaScreen(z, opened, edited):
                                                                                                sticky=N)
 
         textOznaceni = Text(canvasP, width=58, wrap="word")
-        textOznaceni.grid(row=2, column=1)
+        textOznaceni.grid(row=2, column=1, sticky=N)
         textOznaceni.bind("<KeyRelease>", update_size)
         textOznaceni.bind("<Return>", enter)
         textOznaceni.configure(font=("Arial", 13))
@@ -386,6 +410,10 @@ def novaZakazkaScreen(z, opened, edited):
         Entry(canvasP, textvariable=p.cenaCelkem, state='disabled', justify='center').grid(row=2, column=4, sticky=N)
         p.mnozstvi.trace("w", calculate)
         p.cenaZaJednotku.trace("w", calculate)
+
+        button = Button(canvasP, text="X", width=5, command=lambda polo=p, can=canvasP: odstranitPolozku(polo, can, item))
+        button.grid(row=2, column=5, sticky=N)
+        button.configure(font=("Arial", 8))
 
     def saveNovaZakazka():
         db.save(z)
@@ -419,7 +447,7 @@ def novaZakazkaScreen(z, opened, edited):
         canvasToScroll.configure(scrollregion=canvasToScroll.bbox("all"))
 
     def OnMouseWheel(event):
-        canvasToScroll.yview_scroll(int(-1*(event.delta/120)), "units")
+        canvasToScroll.yview_scroll(int(-1 * (event.delta / 120)), "units")
 
     if opened.val:
         opened.val = False
@@ -515,9 +543,9 @@ def novaZakazkaScreen(z, opened, edited):
                                                                                                         column=50)
 
         hasPolozku = False
-        for pol in z.polozky:
+        for pol in polozky:
             hasPolozku = True
-            showPolozku(pol, zakazkaP)
+            showPolozku(pol, zakazkaP, polozky)
         if not hasPolozku:
             pridatPolozku(zakazkaP, polozky)
 
@@ -546,7 +574,7 @@ def novaZakazkaScreen(z, opened, edited):
 
         for prac in prace:
             hasPraci = True
-            showPolozku(prac, zakazkaPrace)
+            showPolozku(prac, zakazkaPrace, prace)
         if not hasPraci:
             pridatPolozku(zakazkaPrace, prace)
 
