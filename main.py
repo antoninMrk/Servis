@@ -419,6 +419,7 @@ def novaZakazkaScreen(z, opened, edited):
         db.save(z)
         db.saveVozidlo(v)
 
+        db.deletePolozkyForZakazka(z.ID)
         for item in polozky:
             db.savePolozku(item, "material")
 

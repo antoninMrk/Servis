@@ -141,6 +141,15 @@ def saveVozidlo(v):
     conn.commit()
 
 
+def deletePolozkyForZakazka(idZak):
+    conn = connector.Connection()
+
+    sql = "DELETE FROM polozka where cisloZakazky='{}'".format(
+            idZak)
+
+    conn.execute(sql)
+    conn.commit()
+
 def savePolozku(p, typ):
     conn = connector.Connection()
     if p.ID is None:
