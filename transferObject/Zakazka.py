@@ -5,6 +5,7 @@ class Zakazka:
 
     def __init__(self):
         self.ID = None
+        self.cisloZakazky = StringVar()
         self.jmeno = StringVar()
         self.datum = None
         self.polozky = []

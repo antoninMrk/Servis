@@ -10,7 +10,8 @@ jmeno text,
 telefon text,
 celkemZaMaterial text,
 celkemZaPraci text,
-celkemZaZakazku text
+celkemZaZakazku text,
+cisloZakazky text
 )""")
 c.execute("""CREATE UNIQUE INDEX zakazka_idx ON zakazka(ID) 
 """)

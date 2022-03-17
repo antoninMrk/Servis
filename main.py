@@ -233,7 +233,7 @@ def mainScreen(zakazky):
     clients = []
     cisloRadku = 1
     for zakazka in zakazky:
-        cisloZakazky = zakazka.ID
+        cisloZakazky = zakazka.cisloZakazky.get()
         cisloRadku += 1
 
         v = zakazka.vozidlo
@@ -434,7 +434,7 @@ def novaZakazkaScreen(z, opened, edited):
         Label(zakazkaC, text="Zakázka").grid(row=0, column=0)
 
         Label(zakazkaC, text="Číslo zakázky").grid(row=1, column=0)
-        Label(zakazkaC, text=z.ID).grid(row=1, column=1)
+        Entry(zakazkaC, textvariable=z.cisloZakazky).grid(row=1, column=1)
         Label(zakazkaC, text="Datum").grid(row=1, column=2)
         datumSplit = z.datum.split('-')
         datum = datumSplit[2] + '/' + datumSplit[1] + '/' + datumSplit[0]
